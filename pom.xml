@@ -1,29 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.erf88</groupId>
-	<artifactId>realmeet</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>realmeet</name>
-	<description>Meet for real</description>
-	<packaging>pom</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.1</version>
-	</parent>
-
-	<modules>
-		<module>service</module>
+    <modules>
+        <module>service</module>
         <module>client</module>
     </modules>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-	</dependencies>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.1</version>
+    </parent>
+
+    <groupId>com.github.erf88</groupId>
+    <artifactId>realmeet</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>realmeet</name>
+    <description>Meet for real</description>
+
+    <properties>
+        <openapi-generator-maven-plugin.version>7.9.0</openapi-generator-maven-plugin.version>
+        <swagger-annotations.version>2.2.27</swagger-annotations.version>
+        <openapi-spec.file>${project.basedir}/../service/src/main/resources/api.yml</openapi-spec.file>
+        <openapi-spec.classpath>classpath:api.yml</openapi-spec.classpath>
+        <api.path>com.github.erf88.realmeet</api.path>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/../service/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>api.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>
