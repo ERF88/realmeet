@@ -11,6 +11,7 @@
     <artifactId>realmeet-client</artifactId>
 
     <properties>
+        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
         <spotbugs-annotations.version>4.8.5</spotbugs-annotations.version>
     </properties>
 
@@ -28,9 +29,18 @@
             <version>${swagger-annotations.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-databind-nullable.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
             <version>${spotbugs-annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
         </dependency>
     </dependencies>
 
@@ -59,6 +69,8 @@
                                 <classpathTargetSpec>${openapi-spec.classpath}</classpathTargetSpec>
                                 <isCorsEnabled>true</isCorsEnabled>
                                 <dateLibrary>java8</dateLibrary>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useJakartaEe>true</useJakartaEe>
                             </configOptions>
                         </configuration>
                     </execution>

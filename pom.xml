@@ -22,7 +22,7 @@
     <description>Meet for real</description>
 
     <properties>
-        <openapi-generator-maven-plugin.version>7.9.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
         <swagger-annotations.version>2.2.27</swagger-annotations.version>
         <openapi-spec.file>${project.basedir}/../service/src/main/resources/api.yml</openapi-spec.file>
         <openapi-spec.classpath>classpath:api.yml</openapi-spec.classpath>
