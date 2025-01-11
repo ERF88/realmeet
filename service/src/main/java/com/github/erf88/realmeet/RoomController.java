@@ -1,13 +1,12 @@
 package com.github.erf88.realmeet;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 import com.github.erf88.realmeet.api.facade.RoomsApi;
 import com.github.erf88.realmeet.api.model.Room;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.CompletableFuture;
-
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @RestController
 public class RoomController implements RoomsApi {
@@ -16,5 +15,4 @@ public class RoomController implements RoomsApi {
     public CompletableFuture<ResponseEntity<Room>> listRooms(Long id) {
         return supplyAsync(() -> ResponseEntity.ok(new Room().id(1L).name("Room #1")));
     }
-
 }
