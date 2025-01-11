@@ -2,7 +2,7 @@
 # = Server
 # =================================
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /v1
 
@@ -10,6 +10,8 @@ server:
 # = Spring
 # =================================
 spring:
+  profiles:
+    active: dev
   datasource:
 # docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.23
     driver-class-name: com.mysql.cj.jdbc.Driver
