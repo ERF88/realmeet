@@ -13,7 +13,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    public Room getRoomById(Long id) {
+    public RoomDTO getRoomById(Long id) {
         Objects.requireNonNull(id);
         return roomRepository.findById(id)
                 .map(room -> new RoomDTO().id(room.getId()).name(room.getName()).seats(room.getSeats()))
