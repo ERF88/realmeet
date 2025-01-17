@@ -1,7 +1,6 @@
 package com.github.erf88.realmeet.domain.entity;
 
 import java.util.Objects;
-import java.util.Optional;
 import org.hibernate.proxy.HibernateProxy;
 import jakarta.persistence.*;
 import lombok.*;
