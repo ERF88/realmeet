@@ -29,3 +29,13 @@ logging:
   level:
     org.springframework: ERROR
     org.flywaydb: ERROR
+
+# =================================
+# = Thread Pool
+# =================================
+#realmeet:
+#  executors:
+#    core-pool-size: 10
+#    max-pool-size: 20
+#    queue-capacity: 50
+#    keep-alive-seconds: 60
