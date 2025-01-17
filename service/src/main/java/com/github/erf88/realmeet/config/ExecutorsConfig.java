@@ -17,6 +17,7 @@ public class ExecutorsConfig {
             @Value("${realmeet.executors.max-pool-size:20}") int maximumPoolSize,
             @Value("${realmeet.executors.queue-capacity:50}") int queueCapacity,
             @Value("${realmeet.executors.keep-alive-seconds:60}") long keepAliveSeconds) {
+
         return new ThreadPoolExecutor(
                 corePoolSize,
                 maximumPoolSize,
