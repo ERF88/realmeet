@@ -1,0 +1,14 @@
+# =================================
+# = Spring
+# =================================
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql://localhost/realmeet
+    username: admin
+    password: admin
+  flyway:
+    cleanDisabled: false
+  jpa:
+    open-in-view: false
+
