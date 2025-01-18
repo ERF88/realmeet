@@ -17,7 +17,7 @@ public class RoomService {
 
     public RoomDTO getRoomById(Long id) {
         Objects.requireNonNull(id);
-        return roomRepository.findById(id)
+        return roomRepository.findByIdAndActive(id, Boolean.TRUE)
                 .map(roomMapper::toRoomDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Room", id));
     }

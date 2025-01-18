@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.integration;
 
+import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_ID;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newRoomBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,11 +12,12 @@ import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.HttpClientErrorException;
 
 class RoomApiIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    private RoomApi roomApi;
+    private RoomApi api;
 
     @Autowired
     private RoomRepository roomRepository;
@@ -23,7 +25,7 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
     @BeforeEach
     @Override
     protected void setupEach() throws Exception {
-        setLocalHostBasePath(roomApi.getApiClient(), "/v1");
+        setLocalHostBasePath(api.getApiClient(), "/v1");
     }
 
     @Test
@@ -34,11 +36,25 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
         assertNotNull(room.getId());
         assertTrue(room.getActive());
 
-        RoomDTO roomDTO = roomApi.getRoom(room.getId());
+        RoomDTO roomDTO = api.getRoom(room.getId());
 
         assertEquals(room.getId(), roomDTO.getId());
         assertEquals(room.getName(), roomDTO.getName());
         assertEquals(room.getSeats(), roomDTO.getSeats());
     }
 
+    @Test
+    void testGetRoomInactive() {
+        Room room = newRoomBuilder().active(false).build();
+        roomRepository.saveAndFlush(room);
+
+        assertFalse(room.getActive());
+
+        assertThrows(HttpClientErrorException.class, () -> api.getRoom(room.getId()));
+    }
+
+    @Test
+    void testGetRoomDoesNotExist() {
+        assertThrows(HttpClientErrorException.class, () -> api.getRoom(DEFAULT_ROOM_ID));
+    }
 }
