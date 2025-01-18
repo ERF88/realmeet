@@ -5,7 +5,6 @@ import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_ID;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newRoomBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.github.erf88.realmeet.api.model.RoomDTO;
@@ -13,18 +12,13 @@ import com.github.erf88.realmeet.core.BaseUnitTest;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
-import com.github.erf88.realmeet.mapper.RoomMapper;
 import com.github.erf88.realmeet.service.RoomService;
-import com.github.erf88.realmeet.utils.MapperUtils;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 class RoomServiceUnitTest extends BaseUnitTest {
-
     private RoomService victim;
 
     @Mock
@@ -54,5 +48,4 @@ class RoomServiceUnitTest extends BaseUnitTest {
 
         assertThrows(ResourceNotFoundException.class, () -> victim.getRoomById(DEFAULT_ROOM_ID));
     }
-
 }

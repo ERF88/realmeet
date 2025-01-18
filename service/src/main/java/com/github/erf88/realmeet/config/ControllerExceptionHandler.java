@@ -10,17 +10,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({ResourceNotFoundException.class})
+    @ExceptionHandler({ ResourceNotFoundException.class })
     public ResponseEntity<Object> handleNotFoundException(Exception e) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, e);
     }
 
     public ResponseEntity<Object> buildResponseEntity(HttpStatus httpStatus, Exception e) {
         ResponseError responseError = new ResponseError()
-                .status(httpStatus.getReasonPhrase())
-                .code(httpStatus.value())
-                .message(e.getMessage());
+            .status(httpStatus.getReasonPhrase())
+            .code(httpStatus.value())
+            .message(e.getMessage());
         return new ResponseEntity<>(responseError, httpStatus);
     }
-
 }

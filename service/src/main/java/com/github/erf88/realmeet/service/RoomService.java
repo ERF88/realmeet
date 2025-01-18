@@ -5,21 +5,20 @@ import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.mapper.RoomMapper;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
-
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
 
     public RoomDTO getRoomById(Long id) {
         Objects.requireNonNull(id);
-        return roomRepository.findByIdAndActive(id, Boolean.TRUE)
-                .map(roomMapper::toRoomDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Room", id));
+        return roomRepository
+            .findByIdAndActive(id, Boolean.TRUE)
+            .map(roomMapper::toRoomDTO)
+            .orElseThrow(() -> new ResourceNotFoundException("Room", id));
     }
-
 }

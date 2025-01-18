@@ -11,5 +11,4 @@ public class ClientConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
 }

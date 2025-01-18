@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
 
 class RoomApiIntegrationTest extends BaseIntegrationTest {
-
     @Autowired
     private RoomApi api;
 

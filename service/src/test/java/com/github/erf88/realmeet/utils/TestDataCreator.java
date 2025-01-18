@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 public final class TestDataCreator {
 
     public static Room.Builder newRoomBuilder() {
-        return Room.newBuilder()
-                .name(DEFAULT_ROOM_NAME)
-                .seats(DEFAULT_ROOM_SEATS);
+        return Room.newBuilder().name(DEFAULT_ROOM_NAME).seats(DEFAULT_ROOM_SEATS);
     }
-
 }

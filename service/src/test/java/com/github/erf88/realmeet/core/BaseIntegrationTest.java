@@ -1,4 +1,3 @@
-
 package com.github.erf88.realmeet.core;
 
 import com.github.erf88.realmeet.Application;
@@ -10,17 +9,16 @@ import java.net.URISyntaxException;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("integration-test")
 @SpringBootTest(
-        classes = {Application.class, RoomApi.class},
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    classes = { Application.class, RoomApi.class },
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 public abstract class BaseIntegrationTest {
-
     @Autowired
     private Flyway flyway;
 
@@ -37,12 +35,11 @@ public abstract class BaseIntegrationTest {
         flyway.migrate();
     }
 
-    protected void setLocalHostBasePath(ApiClient apiClient, String path) throws URISyntaxException, MalformedURLException {
+    protected void setLocalHostBasePath(ApiClient apiClient, String path)
+        throws URISyntaxException, MalformedURLException {
         URI uri = new URI("http", null, "localhost", serverPort, path, null, null);
         apiClient.setBasePath(uri.toURL().toString());
     }
 
-    protected void setupEach() throws Exception {
-    }
-
+    protected void setupEach() throws Exception {}
 }
