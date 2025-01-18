@@ -5,7 +5,6 @@ import com.github.erf88.realmeet.domain.entity.Room;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public abstract class RoomMapper {
-
-    public abstract RoomDTO toRoomDTO(Room room);
+public interface RoomMapper {
+    RoomDTO toRoomDTO(Room room);
 }
