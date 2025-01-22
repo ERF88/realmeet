@@ -1,11 +1,9 @@
 package com.github.erf88.realmeet.validator;
 
-import static com.github.erf88.realmeet.validator.ValidatorConstants.EXCEEDS_MAX_LENGTH;
-import static com.github.erf88.realmeet.validator.ValidatorConstants.MISSING;
+import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static java.util.Objects.isNull;
 
 import com.github.erf88.realmeet.exception.InvalidRequestException;
-import java.util.Objects;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -40,4 +38,22 @@ public final class ValidatorUtils {
         }
         return true;
     }
+
+    public static boolean validateMaxValue(Integer field, String fieldName, int maxValue, ValidationErrors validationErrors) {
+        if(!isNull(field) && field > maxValue) {
+            validationErrors.add(fieldName, fieldName.concat(EXCEEDS_MAX_VALUE));
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validateMinValue(Integer field, String fieldName, int minValue, ValidationErrors validationErrors) {
+        if(!isNull(field) && field < minValue) {
+            validationErrors.add(fieldName, fieldName.concat(BELOW_MIN_VALUE));
+            return false;
+        }
+        return true;
+    }
+
+
 }
