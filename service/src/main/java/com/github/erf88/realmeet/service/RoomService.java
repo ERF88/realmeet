@@ -1,6 +1,8 @@
 package com.github.erf88.realmeet.service;
 
+import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.RoomDTO;
+import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.mapper.RoomMapper;
@@ -20,5 +22,11 @@ public class RoomService {
             .findByIdAndActive(id, Boolean.TRUE)
             .map(roomMapper::toRoomDTO)
             .orElseThrow(() -> new ResourceNotFoundException("Room", id));
+    }
+
+    public RoomDTO createRoom(CreateRoomDTO createRoomDTO) {
+        Room room = Room.newBuilder().name(createRoomDTO.getName()).seats(createRoomDTO.getSeats()).build();
+        roomRepository.save(room);
+        return roomMapper.toRoomDTO(room);
     }
 }
