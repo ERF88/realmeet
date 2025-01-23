@@ -13,6 +13,7 @@ import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.service.RoomService;
+import com.github.erf88.realmeet.validator.RoomValidator;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,12 @@ class RoomServiceUnitTest extends BaseUnitTest {
     @Mock
     private RoomRepository roomRepository;
 
+    @Mock
+    private RoomValidator roomValidator;
+
     @BeforeEach
-    void setEach() {
-        victim = new RoomService(roomRepository, roomMapper());
+    void setupEach() {
+        victim = new RoomService(roomRepository, roomMapper(), roomValidator);
     }
 
     @Test

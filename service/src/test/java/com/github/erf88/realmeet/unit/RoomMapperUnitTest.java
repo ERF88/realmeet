@@ -16,7 +16,7 @@ class RoomMapperUnitTest extends BaseUnitTest {
     private RoomMapper victim;
 
     @BeforeEach
-    void setEach() {
+    void setupEach() {
         victim = roomMapper();
     }
 

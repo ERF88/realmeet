@@ -26,7 +26,7 @@ public class ValidationErrors implements Streamable<ValidationError> {
         return validationErrorList.get(index);
     }
 
-    public int getNumberOfError() {
+    public int getNumberOfErrors() {
         return validationErrorList.size();
     }
 

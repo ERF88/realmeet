@@ -2,6 +2,7 @@ package com.github.erf88.realmeet.validator;
 
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.github.erf88.realmeet.exception.InvalidRequestException;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public final class ValidatorUtils {
     }
 
     public static boolean validateRequired(String field, String fieldName, ValidationErrors validationErrors) {
-        if(field.isBlank()) {
+        if(isBlank(field)) {
             validationErrors.add(fieldName, fieldName.concat(MISSING));
             return false;
         }
@@ -32,7 +33,7 @@ public final class ValidatorUtils {
     }
 
     public static boolean validateMaxLength(String field, String fieldName, int maxLength, ValidationErrors validationErrors) {
-        if(!field.isBlank() && field.trim().length() > maxLength) {
+        if(!isBlank(field) && field.trim().length() > maxLength) {
             validationErrors.add(fieldName, fieldName.concat(EXCEEDS_MAX_LENGTH));
             return false;
         }

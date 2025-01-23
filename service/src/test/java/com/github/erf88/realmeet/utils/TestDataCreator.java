@@ -3,6 +3,7 @@ package com.github.erf88.realmeet.utils;
 import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_NAME;
 import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_SEATS;
 
+import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.domain.entity.Room;
 import lombok.NoArgsConstructor;
 
@@ -11,5 +12,9 @@ public final class TestDataCreator {
 
     public static Room.Builder newRoomBuilder() {
         return Room.newBuilder().name(DEFAULT_ROOM_NAME).seats(DEFAULT_ROOM_SEATS);
+    }
+
+    public static CreateRoomDTO newCreateRoomDTO() {
+        return new CreateRoomDTO().name(DEFAULT_ROOM_NAME).seats(DEFAULT_ROOM_SEATS);
     }
 }
