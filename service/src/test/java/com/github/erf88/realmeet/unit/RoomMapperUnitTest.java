@@ -2,9 +2,11 @@ package com.github.erf88.realmeet.unit;
 
 import static com.github.erf88.realmeet.utils.MapperUtils.roomMapper;
 import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_ID;
+import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateRoomDTO;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newRoomBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.RoomDTO;
 import com.github.erf88.realmeet.core.BaseUnitTest;
 import com.github.erf88.realmeet.domain.entity.Room;
@@ -28,5 +30,14 @@ class RoomMapperUnitTest extends BaseUnitTest {
         assertEquals(room.getId(), roomDTO.getId());
         assertEquals(room.getName(), roomDTO.getName());
         assertEquals(room.getSeats(), roomDTO.getSeats());
+    }
+
+    @Test
+    void testToRoom() {
+        CreateRoomDTO createRoomDTO = newCreateRoomDTO();
+        Room room = victim.toRoom(createRoomDTO);
+
+        assertEquals(createRoomDTO.getName(), room.getName());
+        assertEquals(createRoomDTO.getSeats(), room.getSeats());
     }
 }
