@@ -7,18 +7,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.github.erf88.realmeet.core.BaseUnitTest;
+import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.InvalidRequestException;
 import com.github.erf88.realmeet.validator.RoomValidator;
 import com.github.erf88.realmeet.validator.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 public class RoomValidatorUnitTest extends BaseUnitTest {
     private RoomValidator victim;
 
+    @Mock
+    private RoomRepository roomRepository;
+
     @BeforeEach
     public void setupEach() {
-        victim = new RoomValidator();
+        victim = new RoomValidator(roomRepository);
     }
 
     @Test
