@@ -17,22 +17,33 @@ public class RoomValidator {
     public void validate(CreateRoomDTO createRoomDTO) {
         ValidationErrors validationErrors = new ValidationErrors();
 
-        validateRequired(createRoomDTO.getName(), ROOM_NAME, validationErrors);
-        validateMaxLength(createRoomDTO.getName(), ROOM_NAME, ROOM_NAME_MAX_LENGTH, validationErrors);
-
-        validateRequired(createRoomDTO.getSeats(), ROOM_SEATS, validationErrors);
-        validateMinValue(createRoomDTO.getSeats(), ROOM_SEATS, ROOM_SEATS_MIN_VALUE, validationErrors);
-        validateMaxValue(createRoomDTO.getSeats(), ROOM_SEATS, ROOM_SEATS_MAX_VALUE, validationErrors);
+        if(
+            validateName(createRoomDTO.getName(), validationErrors) &&
+            validateSeats(createRoomDTO.getSeats(), validationErrors)
+        ) {
+            validateNameDuplicate(createRoomDTO.getName(), validationErrors);
+        }
 
         throwOnError(validationErrors);
-
-        validateNameDuplicate(createRoomDTO.getName());
     }
 
-    private void validateNameDuplicate(String name) {
+    private static boolean validateName(String name, ValidationErrors validationErrors) {
+        return (
+            validateRequired(name, ROOM_NAME, validationErrors) &&
+            validateMaxLength(name, ROOM_NAME, ROOM_NAME_MAX_LENGTH, validationErrors)
+        );
+    }
+
+    private static boolean validateSeats(Integer seats, ValidationErrors validationErrors) {
+        return (
+            validateRequired(seats, ROOM_SEATS, validationErrors) &&
+            validateMinValue(seats, ROOM_SEATS, ROOM_SEATS_MIN_VALUE, validationErrors) &&
+            validateMaxValue(seats, ROOM_SEATS, ROOM_SEATS_MAX_VALUE, validationErrors)
+        );
+    }
+
+    private void validateNameDuplicate(String name, ValidationErrors validationErrors) {
         roomRepository.findByNameAndActive(name, Boolean.TRUE)
-            .ifPresent(__ -> {
-                throw new InvalidRequestException(new ValidationError(ROOM_NAME, ROOM_NAME.concat(DUPLICATE)));
-            });
+            .ifPresent(__ -> validationErrors.add(ROOM_NAME, ROOM_NAME.concat(DUPLICATE)));
     }
 }
