@@ -15,4 +15,8 @@ public final class ResponseEntityUtils {
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
+    public static <T> ResponseEntity<T> notFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
 }

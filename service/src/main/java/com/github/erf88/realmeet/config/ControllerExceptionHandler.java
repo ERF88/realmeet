@@ -1,25 +1,35 @@
 package com.github.erf88.realmeet.config;
 
+import static com.github.erf88.realmeet.util.ResponseEntityUtils.notFound;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+
 import com.github.erf88.realmeet.api.model.ResponseError;
+import com.github.erf88.realmeet.exception.InvalidRequestException;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
+import com.github.erf88.realmeet.util.ResponseEntityUtils;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({ ResourceNotFoundException.class })
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(Exception e) {
-        return buildResponseEntity(HttpStatus.NOT_FOUND, e);
+        return notFound();
     }
 
-    public ResponseEntity<Object> buildResponseEntity(HttpStatus httpStatus, Exception e) {
-        ResponseError responseError = new ResponseError()
-            .status(httpStatus.getReasonPhrase())
-            .code(httpStatus.value())
-            .message(e.getMessage());
-        return new ResponseEntity<>(responseError, httpStatus);
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseBody
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    public List<ResponseError> handleInvalidRequestException(InvalidRequestException exception) {
+        return exception.getValidationErrors()
+                .stream()
+                .map(e -> new ResponseError().field(e.getField()).errorCode(e.getErrorCode()))
+                .toList();
     }
 }
