@@ -5,9 +5,8 @@ import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
 
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
-import com.github.erf88.realmeet.exception.InvalidRequestException;
-import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class RoomValidator {
     public void validate(CreateRoomDTO createRoomDTO) {
         ValidationErrors validationErrors = new ValidationErrors();
 
-        if(
+        if (
             validateName(createRoomDTO.getName(), validationErrors) &&
             validateSeats(createRoomDTO.getSeats(), validationErrors)
         ) {
@@ -43,7 +42,8 @@ public class RoomValidator {
     }
 
     private void validateNameDuplicate(String name, ValidationErrors validationErrors) {
-        roomRepository.findByNameAndActive(name, Boolean.TRUE)
+        roomRepository
+            .findByNameAndActive(name, Boolean.TRUE)
             .ifPresent(__ -> validationErrors.add(ROOM_NAME, ROOM_NAME.concat(DUPLICATE)));
     }
 }

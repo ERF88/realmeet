@@ -7,7 +7,6 @@ import lombok.Getter;
 
 @Getter
 public class InvalidRequestException extends RuntimeException {
-
     private final ValidationErrors validationErrors;
 
     public InvalidRequestException(ValidationErrors validationErrors) {

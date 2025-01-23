@@ -4,7 +4,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class ValidatorConstants {
-
     public static final String ROOM_NAME = "name";
     public static final int ROOM_NAME_MAX_LENGTH = 20;
     public static final String ROOM_SEATS = "seats";

@@ -25,9 +25,10 @@ public class ControllerExceptionHandler {
     @ResponseBody
     @ResponseStatus(UNPROCESSABLE_ENTITY)
     public List<ResponseError> handleInvalidRequestException(InvalidRequestException exception) {
-        return exception.getValidationErrors()
-                .stream()
-                .map(e -> new ResponseError().field(e.getField()).errorCode(e.getErrorCode()))
-                .toList();
+        return exception
+            .getValidationErrors()
+            .stream()
+            .map(e -> new ResponseError().field(e.getField()).errorCode(e.getErrorCode()))
+            .toList();
     }
 }

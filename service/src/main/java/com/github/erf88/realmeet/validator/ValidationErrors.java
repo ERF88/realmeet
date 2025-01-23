@@ -3,9 +3,9 @@ package com.github.erf88.realmeet.validator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.springframework.data.util.Streamable;
 import lombok.NonNull;
 import lombok.ToString;
+import org.springframework.data.util.Streamable;
 
 @ToString
 public class ValidationErrors implements Streamable<ValidationError> {
@@ -15,14 +15,16 @@ public class ValidationErrors implements Streamable<ValidationError> {
         validationErrorList = new ArrayList<>();
     }
 
-    public ValidationErrors add(String field, String errorCode){
+    public ValidationErrors add(String field, String errorCode) {
         return add(new ValidationError(field, errorCode));
     }
-    public ValidationErrors add(ValidationError validationError){
+
+    public ValidationErrors add(ValidationError validationError) {
         validationErrorList.add(validationError);
         return this;
     }
-    public ValidationError getError(int index){
+
+    public ValidationError getError(int index) {
         return validationErrorList.get(index);
     }
 
