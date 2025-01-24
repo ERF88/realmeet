@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.controller;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import com.github.erf88.realmeet.api.facade.RoomsApi;
@@ -32,6 +33,6 @@ public class RoomController implements RoomsApi {
 
     @Override
     public CompletableFuture<ResponseEntity<Void>> deleteRoom(Long id) {
-        return RoomsApi.super.deleteRoom(id);
+        return runAsync(() -> roomService.deleteRoom(id), controllersExecutor).thenApply(ResponseEntityUtils::noContent);
     }
 }
