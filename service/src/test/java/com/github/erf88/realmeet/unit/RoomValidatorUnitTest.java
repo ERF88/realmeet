@@ -88,7 +88,7 @@ public class RoomValidatorUnitTest extends BaseUnitTest {
     }
 
     @Test
-    void testValidateWhenRoomSeatsAreGreaterThanmaxValue() {
+    void testValidateWhenRoomSeatsAreGreaterThanMaxValue() {
         InvalidRequestException exception = assertThrows(
             InvalidRequestException.class,
             () -> victim.validate(newCreateRoomDTO().seats(ROOM_SEATS_MAX_VALUE + 1))
