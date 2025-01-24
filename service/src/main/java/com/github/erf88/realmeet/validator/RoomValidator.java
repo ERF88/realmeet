@@ -2,9 +2,12 @@ package com.github.erf88.realmeet.validator;
 
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
+import static java.util.Objects.isNull;
 
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
+import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +23,21 @@ public class RoomValidator {
             validateName(createRoomDTO.getName(), validationErrors) &&
             validateSeats(createRoomDTO.getSeats(), validationErrors)
         ) {
-            validateNameDuplicate(createRoomDTO.getName(), validationErrors);
+            validateNameDuplicate(null, createRoomDTO.getName(), validationErrors);
+        }
+
+        throwOnError(validationErrors);
+    }
+
+    public void validate(Long id, UpdateRoomDTO updateRoomDTO) {
+        ValidationErrors validationErrors = new ValidationErrors();
+
+        if (
+            validateRequired(id, ROOM_ID, validationErrors) &&
+            validateName(updateRoomDTO.getName(), validationErrors) &&
+            validateSeats(updateRoomDTO.getSeats(), validationErrors)
+        ) {
+            validateNameDuplicate(id, updateRoomDTO.getName(), validationErrors);
         }
 
         throwOnError(validationErrors);
@@ -41,9 +58,13 @@ public class RoomValidator {
         );
     }
 
-    private void validateNameDuplicate(String name, ValidationErrors validationErrors) {
+    private void validateNameDuplicate(Long idToExclude, String name, ValidationErrors validationErrors) {
         roomRepository
             .findByNameAndActive(name, Boolean.TRUE)
-            .ifPresent(__ -> validationErrors.add(ROOM_NAME, ROOM_NAME.concat(DUPLICATE)));
+            .ifPresent(room -> {
+                if(!isNull(idToExclude) && !Objects.equals(room.getId(), idToExclude)) {
+                    validationErrors.add(ROOM_NAME, ROOM_NAME.concat(DUPLICATE));
+                }
+            });
     }
 }
