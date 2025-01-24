@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.RoomDTO;
+import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
@@ -39,10 +40,16 @@ public class RoomService {
         roomRepository.deactivate(id);
     }
 
+    @Transactional
+    public void updateRoom(Long id, UpdateRoomDTO updateRoomDTO) {
+        getActiveRoomOrThrow(id);
+        roomRepository.updateRoom(id, updateRoomDTO.getName(), updateRoomDTO.getSeats());
+    }
+
     private Room getActiveRoomOrThrow(Long id) {
         requireNonNull(id);
         return roomRepository
-            .findByIdAndActive(id, Boolean.TRUE)
-            .orElseThrow(() -> new ResourceNotFoundException("Room", id));
+                .findByIdAndActive(id, Boolean.TRUE)
+                .orElseThrow(() -> new ResourceNotFoundException("Room", id));
     }
 }
