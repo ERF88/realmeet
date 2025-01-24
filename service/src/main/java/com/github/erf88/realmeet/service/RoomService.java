@@ -12,6 +12,7 @@ import com.github.erf88.realmeet.validator.RoomValidator;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class RoomService {
         return roomMapper.toRoomDTO(room);
     }
 
+    @Transactional
     public void deleteRoom(Long id) {
         getActiveRoomOrThrow(id);
         roomRepository.deactivate(id);
