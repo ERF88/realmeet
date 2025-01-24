@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.github.erf88.realmeet.api.facade.RoomApi;
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.RoomDTO;
+import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.core.BaseIntegrationTest;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
@@ -91,5 +92,34 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
     @Test
     void testDeleteRoomDoesNotExist() {
         assertThrows(HttpClientErrorException.class, () -> api.deleteRoom(DEFAULT_ROOM_ID));
+    }
+
+    @Test
+    void testUpdateRoomSuccess() {
+        Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
+        UpdateRoomDTO updateRoomDTO = new UpdateRoomDTO().name(room.getName() + "_").seats(room.getSeats() + 1);
+
+        api.updateRoom(room.getId(), updateRoomDTO);
+
+        Room updatedRoom = roomRepository.findById(room.getId()).orElseThrow();
+
+        assertEquals(updateRoomDTO.getName(), updatedRoom.getName());
+        assertEquals(updateRoomDTO.getSeats(), updatedRoom.getSeats());
+    }
+
+    @Test
+    void testUpdateRoomDoesNotExists() {
+        UpdateRoomDTO updateRoomDTO = new UpdateRoomDTO().name("Room").seats(10);
+
+        assertThrows(HttpClientErrorException.class, () -> api.updateRoom(DEFAULT_ROOM_ID, updateRoomDTO));
+    }
+
+    @Test
+    void testUpdateRoomValidationError() {
+        UpdateRoomDTO updateRoomDTO = new UpdateRoomDTO().name(null).seats(10);
+
+        assertThrows(
+            HttpClientErrorException.UnprocessableEntity.class, () -> api.updateRoom(DEFAULT_ROOM_ID, updateRoomDTO)
+        );
     }
 }
