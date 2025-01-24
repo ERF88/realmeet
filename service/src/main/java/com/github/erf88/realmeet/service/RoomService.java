@@ -1,5 +1,7 @@
 package com.github.erf88.realmeet.service;
 
+import static java.util.Objects.requireNonNull;
+
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.RoomDTO;
 import com.github.erf88.realmeet.domain.entity.Room;
@@ -19,11 +21,8 @@ public class RoomService {
     private final RoomValidator roomValidator;
 
     public RoomDTO getRoomById(Long id) {
-        Objects.requireNonNull(id);
-        return roomRepository
-            .findByIdAndActive(id, Boolean.TRUE)
-            .map(roomMapper::toRoomDTO)
-            .orElseThrow(() -> new ResourceNotFoundException("Room", id));
+        Room room = getActiveRoomOrThrow(id);
+        return roomMapper.toRoomDTO(room);
     }
 
     public RoomDTO createRoom(CreateRoomDTO createRoomDTO) {
@@ -31,5 +30,17 @@ public class RoomService {
         Room room = roomMapper.toRoom(createRoomDTO);
         roomRepository.save(room);
         return roomMapper.toRoomDTO(room);
+    }
+
+    public void deleteRoom(Long id) {
+        getActiveRoomOrThrow(id);
+        roomRepository.deactivate(id);
+    }
+
+    private Room getActiveRoomOrThrow(Long id) {
+        requireNonNull(id);
+        return roomRepository
+            .findByIdAndActive(id, Boolean.TRUE)
+            .orElseThrow(() -> new ResourceNotFoundException("Room", id));
     }
 }
