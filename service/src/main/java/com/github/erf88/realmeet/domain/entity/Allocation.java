@@ -18,18 +18,25 @@ public class Allocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "room_id")
     private Room room;
 
     private Employee employee;
 
+    @Column(name = "subject", nullable = false)
     private String subject;
 
+    @Column(name = "start_at", nullable = false)
     private OffsetDateTime startAt;
 
+    @Column(name = "end_at", nullable = false)
     private OffsetDateTime endAt;
 
+    @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
     @Override
@@ -60,6 +67,7 @@ public class Allocation {
 
     public static final class Builder {
         private Long id;
+
         private Room room;
         private Employee employee;
         private String subject;
