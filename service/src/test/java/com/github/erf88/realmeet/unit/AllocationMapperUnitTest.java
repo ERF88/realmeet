@@ -1,11 +1,11 @@
 package com.github.erf88.realmeet.unit;
 
 import static com.github.erf88.realmeet.utils.MapperUtils.allocationMapper;
-import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateAllocationDTO;
-import static com.github.erf88.realmeet.utils.TestDataCreator.newRoomBuilder;
+import static com.github.erf88.realmeet.utils.TestDataCreator.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.github.erf88.realmeet.api.model.AllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.core.BaseUnitTest;
 import com.github.erf88.realmeet.domain.entity.Allocation;
@@ -32,5 +32,18 @@ class AllocationMapperUnitTest extends BaseUnitTest {
         assertEquals(createAllocationDTO.getEmployeeEmail(), allocation.getEmployee().getEmail());
         assertEquals(createAllocationDTO.getStartAt(), allocation.getStartAt());
         assertEquals(createAllocationDTO.getEndAt(), allocation.getEndAt());
+    }
+
+    @Test
+    void testToAllocationDTO() {
+        Allocation allocation = newAllocationBuilder().build();
+        AllocationDTO allocationDTO = victim.toAllocationDTO(allocation);
+
+        assertEquals(allocation.getRoom().getId(), allocationDTO.getId());
+        assertEquals(allocation.getSubject(), allocationDTO.getSubject());
+        assertEquals(allocation.getEmployee().getName(), allocationDTO.getEmployeeName());
+        assertEquals(allocation.getEmployee().getEmail(), allocationDTO.getEmployeeEmail());
+        assertEquals(allocation.getStartAt(), allocationDTO.getStartAt());
+        assertEquals(allocation.getEndAt(), allocationDTO.getEndAt());
     }
 }

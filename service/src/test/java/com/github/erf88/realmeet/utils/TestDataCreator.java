@@ -5,6 +5,7 @@ import static com.github.erf88.realmeet.utils.TestConstants.*;
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.domain.entity.Allocation;
+import com.github.erf88.realmeet.domain.entity.Employee;
 import com.github.erf88.realmeet.domain.entity.Room;
 import java.time.OffsetDateTime;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,10 @@ public final class TestDataCreator {
         return Allocation
             .newBuilder()
             .room(newRoomBuilder().build())
-            .subject("subject")
-            .startAt(OffsetDateTime.now())
-            .endAt(OffsetDateTime.now().plusHours(1));
+            .subject(DEFAULT_ALLOCATION_SUBJECT)
+            .employee(Employee.newBuilder().name(DEFAULT_EMPLOYEE_NAME).email(DEFAULT_EMPLOYEE_EMAIL).build())
+            .startAt(DEFAULT_ALLOCATION_START_AT)
+            .endAt(DEFAULT_ALLOCATION_END_AT);
     }
 
     public static CreateAllocationDTO newCreateAllocationDTO() {
