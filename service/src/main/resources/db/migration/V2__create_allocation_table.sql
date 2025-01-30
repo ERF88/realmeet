@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS allocation (
 	created_at      DATETIME(3) NOT NULL,
 	updated_at      DATETIME(3) NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT fk-allocation-room_id-room-id FOREIGN KEY (room_id) REFERENCES room(id)
+	CONSTRAINT fk_allocation_room_id FOREIGN KEY (room_id) REFERENCES room(id)
 );

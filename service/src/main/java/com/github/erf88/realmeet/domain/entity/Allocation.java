@@ -1,10 +1,10 @@
 package com.github.erf88.realmeet.domain.entity;
 
+import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import org.hibernate.proxy.HibernateProxy;
-import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 @Getter
 @NoArgsConstructor
@@ -13,7 +13,6 @@ import lombok.*;
 @Entity
 @Table(name = "allocation")
 public class Allocation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +21,7 @@ public class Allocation {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @Embedded
     private Employee employee;
 
     @Column(name = "subject", nullable = false)
@@ -76,8 +76,7 @@ public class Allocation {
         private OffsetDateTime createdAt;
         private OffsetDateTime updatedAt;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         public Builder id(Long id) {
             this.id = id;
