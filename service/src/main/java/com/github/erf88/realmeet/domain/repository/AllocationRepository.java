@@ -10,6 +10,4 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AllocationRepository extends JpaRepository<Allocation, Long> {
-
-}
+public interface AllocationRepository extends JpaRepository<Allocation, Long> {}

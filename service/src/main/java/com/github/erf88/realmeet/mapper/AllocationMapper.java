@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AllocationMapper {
-    AllocationDTO toAllocationDTO(Allocation allocation);
-
     Allocation toAllocation(CreateAllocationDTO createAllocationDTO);
+
+    AllocationDTO toAllocationDTO(Allocation allocation);
 }

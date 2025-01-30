@@ -15,7 +15,10 @@ public class AllocationService {
     private final AllocationRepository allocationRepository;
     private final AllocationMapper allocationMapper;
     private final RoomRepository roomRepository;
-    public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
 
+    public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
+        Allocation allocation = allocationMapper.toAllocation(createAllocationDTO);
+        allocationRepository.save(allocation);
+        return allocationMapper.toAllocationDTO(allocation);
     }
 }

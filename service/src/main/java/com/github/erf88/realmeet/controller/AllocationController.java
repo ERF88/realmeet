@@ -22,6 +22,6 @@ public class AllocationController implements AllocationsApi {
     @Override
     public CompletableFuture<ResponseEntity<AllocationDTO>> createAllocation(CreateAllocationDTO createAllocationDTO) {
         return supplyAsync(() -> allocationService.createAllocation(createAllocationDTO), controllersExecutor)
-                .thenApply(ResponseEntityUtils::created);
+            .thenApply(ResponseEntityUtils::created);
     }
 }
