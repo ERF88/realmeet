@@ -1,6 +1,6 @@
 package com.github.erf88.realmeet.utils;
 
-import static com.github.erf88.realmeet.utils.DateUtils.now;
+import static com.github.erf88.realmeet.util.DateUtils.now;
 
 import java.time.OffsetDateTime;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.github.erf88.realmeet.utils;
+package com.github.erf88.realmeet.util;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;

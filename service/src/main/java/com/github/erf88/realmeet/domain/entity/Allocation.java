@@ -1,5 +1,7 @@
 package com.github.erf88.realmeet.domain.entity;
 
+import static com.github.erf88.realmeet.util.DateUtils.now;
+
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -38,6 +40,17 @@ public class Allocation {
 
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = Objects.requireNonNullElse(createdAt, now());
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = now();
+    }
 
     @Override
     public final boolean equals(Object o) {
