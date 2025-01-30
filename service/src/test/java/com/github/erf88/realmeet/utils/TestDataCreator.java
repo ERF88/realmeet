@@ -21,20 +21,21 @@ public final class TestDataCreator {
     }
 
     public static Allocation.Builder newAllocationBuilder() {
-        return Allocation.newBuilder()
-                .room(newRoomBuilder().build())
-                .subject("subject")
-                .startAt(OffsetDateTime.now())
-                .endAt(OffsetDateTime.now().plusHours(1));
+        return Allocation
+            .newBuilder()
+            .room(newRoomBuilder().build())
+            .subject("subject")
+            .startAt(OffsetDateTime.now())
+            .endAt(OffsetDateTime.now().plusHours(1));
     }
 
     public static CreateAllocationDTO newCreateAllocationDTO() {
         return new CreateAllocationDTO()
-                .roomId(DEFAULT_ROOM_ID)
-                .subject(DEFAULT_ALLOCATION_SUBJECT)
-                .employeeName(DEFAULT_EMPLOYEE_NAME)
-                .employeeEmail(DEFAULT_EMPLOYEE_EMAIL)
-                .startAt(DEFAULT_ALLOCATION_START_AT)
-                .endAt(DEFAULT_ALLOCATION_END_AT);
+            .roomId(DEFAULT_ROOM_ID)
+            .subject(DEFAULT_ALLOCATION_SUBJECT)
+            .employeeName(DEFAULT_EMPLOYEE_NAME)
+            .employeeEmail(DEFAULT_EMPLOYEE_EMAIL)
+            .startAt(DEFAULT_ALLOCATION_START_AT)
+            .endAt(DEFAULT_ALLOCATION_END_AT);
     }
 }

@@ -2,7 +2,9 @@ package com.github.erf88.realmeet.unit;
 
 import static com.github.erf88.realmeet.utils.MapperUtils.allocationMapper;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateAllocationDTO;
+import static com.github.erf88.realmeet.utils.TestDataCreator.newRoomBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.core.BaseUnitTest;
@@ -22,9 +24,9 @@ class AllocationMapperUnitTest extends BaseUnitTest {
     @Test
     void testToAllocation() {
         CreateAllocationDTO createAllocationDTO = newCreateAllocationDTO();
-        Allocation allocation = victim.toAllocation(createAllocationDTO);
+        Allocation allocation = victim.toAllocation(createAllocationDTO, newRoomBuilder().build());
 
-        assertEquals(createAllocationDTO.getRoomId(), allocation.getRoom().getId());
+        assertNull(allocation.getRoom().getId());
         assertEquals(createAllocationDTO.getSubject(), allocation.getSubject());
         assertEquals(createAllocationDTO.getEmployeeName(), allocation.getEmployee().getName());
         assertEquals(createAllocationDTO.getEmployeeEmail(), allocation.getEmployee().getEmail());
