@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.unit;
 
+import static com.github.erf88.realmeet.util.DateUtils.now;
 import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_NAME;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateAllocationDTO;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateRoomDTO;
@@ -119,4 +120,43 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
         );
     }
 
+    @Test
+    void testValidateWhenAllocationStartAtIsMissing() {
+        InvalidRequestException exception = assertThrows(
+                InvalidRequestException.class,
+                () -> victim.validate(newCreateAllocationDTO().startAt(null))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+                new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(MISSING)),
+                exception.getValidationErrors().getError(0)
+        );
+    }
+
+    @Test
+    void testValidateWhenAllocationEndAtIsMissing() {
+        InvalidRequestException exception = assertThrows(
+                InvalidRequestException.class,
+                () -> victim.validate(newCreateAllocationDTO().endAt(null))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+                new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(MISSING)),
+                exception.getValidationErrors().getError(0)
+        );
+    }
+
+    @Test
+    void testValidateWhenAllocationDateOrderIsInvalid() {
+        InvalidRequestException exception = assertThrows(
+                InvalidRequestException.class,
+                () -> victim
+                    .validate(newCreateAllocationDTO().startAt(now().plusDays(1)).endAt(now().plusDays(1).minusMinutes(30)))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+                new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(INCONSISTENT)),
+                exception.getValidationErrors().getError(0)
+        );
+    }
 }
