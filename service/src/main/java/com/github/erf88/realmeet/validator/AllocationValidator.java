@@ -48,7 +48,9 @@ public class AllocationValidator {
     }
 
     private void validateDates(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
-        validateDatesPresent(startAt, endAt, validationErrors);
+        if(validateDatesPresent(startAt, endAt, validationErrors)) {
+            validateDatesOrdering(startAt, endAt, validationErrors);
+        }
     }
 
     private boolean validateDatesPresent(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
@@ -56,5 +58,13 @@ public class AllocationValidator {
             validateRequired(startAt, ALLOCATION_START_AT, validationErrors) &&
             validateRequired(endAt, ALLOCATION_END_AT, validationErrors)
         );
+    }
+
+    private boolean validateDatesOrdering(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
+        if(startAt.isEqual(endAt) || startAt.isAfter(endAt)) {
+            validationErrors.add(ALLOCATION_START_AT, INCONSISTENT);
+            return false;
+        }
+        return true;
     }
 }
