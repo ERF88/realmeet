@@ -2,6 +2,7 @@ package com.github.erf88.realmeet.core;
 
 import com.github.erf88.realmeet.Application;
 import com.github.erf88.realmeet.api.ApiClient;
+import com.github.erf88.realmeet.api.facade.AllocationApi;
 import com.github.erf88.realmeet.api.facade.RoomApi;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -15,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("integration-test")
 @SpringBootTest(
-    classes = { Application.class, RoomApi.class },
+    classes = { Application.class, RoomApi.class, AllocationApi.class },
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 public abstract class BaseIntegrationTest {

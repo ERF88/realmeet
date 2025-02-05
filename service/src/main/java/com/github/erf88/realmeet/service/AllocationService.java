@@ -19,7 +19,8 @@ public class AllocationService {
     private final RoomRepository roomRepository;
 
     public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
-        Room room = roomRepository.findById(createAllocationDTO.getRoomId())
+        Room room = roomRepository
+            .findById(createAllocationDTO.getRoomId())
             .orElseThrow(() -> new ResourceNotFoundException("Room", createAllocationDTO.getRoomId()));
         Allocation allocation = allocationMapper.toAllocation(createAllocationDTO, room);
         allocationRepository.save(allocation);

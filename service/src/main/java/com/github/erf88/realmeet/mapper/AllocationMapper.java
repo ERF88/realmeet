@@ -19,5 +19,6 @@ public interface AllocationMapper {
 
     @Mapping(source = "employee.name", target = "employeeName")
     @Mapping(source = "employee.email", target = "employeeEmail")
+    @Mapping(source = "room.id", target = "roomId")
     AllocationDTO toAllocationDTO(Allocation allocation);
 }
