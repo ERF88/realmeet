@@ -12,6 +12,7 @@ public final class ValidatorConstants {
     public static final int ALLOCATION_SUBJECT_MAX_LENGTH = 60;
     public static final int ALLOCATION_EMPLOYEE_NAME_MAX_LENGTH = 20;
     public static final int ALLOCATION_EMPLOYEE_EMAIL_MAX_LENGTH = 30;
+    public static final int ALLOCATION_MAX_DURATION_SECONDS = 4 * 60 * 60;
     public static final String ROOM_ID = "id";
     public static final String ROOM_NAME = "name";
     public static final int ROOM_NAME_MAX_LENGTH = 20;
@@ -25,4 +26,5 @@ public final class ValidatorConstants {
     public static final String BELOW_MIN_VALUE = ".belowMinValue";
     public static final String INCONSISTENT = ".inconsistent";
     public static final String IN_THE_PAST = ".inThePast";
+    public static final String EXCEEDS_DURATION = ".exceedsDuration";
 }
