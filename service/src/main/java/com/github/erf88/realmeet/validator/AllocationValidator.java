@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.validator;
 
+import static com.github.erf88.realmeet.util.DateUtils.now;
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
 import static java.util.Objects.isNull;
@@ -8,6 +9,7 @@ import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
+import com.github.erf88.realmeet.util.DateUtils;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
@@ -50,6 +52,7 @@ public class AllocationValidator {
     private void validateDates(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
         if(validateDatesPresent(startAt, endAt, validationErrors)) {
             validateDatesOrdering(startAt, endAt, validationErrors);
+            validateDatesInTheFuture(startAt, validationErrors);
         }
     }
 
@@ -62,9 +65,15 @@ public class AllocationValidator {
 
     private boolean validateDatesOrdering(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
         if(startAt.isEqual(endAt) || startAt.isAfter(endAt)) {
-            validationErrors.add(ALLOCATION_START_AT, INCONSISTENT);
+            validationErrors.add(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(INCONSISTENT));
             return false;
         }
         return true;
+    }
+
+    private void validateDatesInTheFuture(OffsetDateTime date, ValidationErrors validationErrors) {
+        if(date.isBefore(now())) {
+            validationErrors.add(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(IN_THE_PAST));
+        }
     }
 }
