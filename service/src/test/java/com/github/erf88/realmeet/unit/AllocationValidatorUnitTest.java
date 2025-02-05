@@ -159,4 +159,33 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
                 exception.getValidationErrors().getError(0)
         );
     }
+
+    @Test
+    void testValidateWhenAllocationDateIsInThePast() {
+        InvalidRequestException exception = assertThrows(
+                InvalidRequestException.class,
+                () -> victim
+                    .validate(newCreateAllocationDTO().startAt(now().minusMinutes(30)).endAt(now().plusMinutes(30)))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+                new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(IN_THE_PAST)),
+                exception.getValidationErrors().getError(0)
+        );
+    }
+
+    @Test
+    void testValidateWhenAllocationDateIntervalExceedsMaxDuration() {
+        InvalidRequestException exception = assertThrows(
+                InvalidRequestException.class,
+                () -> victim
+                    .validate(newCreateAllocationDTO()
+                        .startAt(now().plusDays(1)).endAt(now().plusDays(1).plusSeconds(ALLOCATION_MAX_DURATION_SECONDS + 1)))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+                new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(EXCEEDS_DURATION)),
+                exception.getValidationErrors().getError(0)
+        );
+    }
 }
