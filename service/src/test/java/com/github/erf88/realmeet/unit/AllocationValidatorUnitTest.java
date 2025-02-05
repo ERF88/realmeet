@@ -65,4 +65,58 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
         );
     }
 
+    @Test
+    void testValidateWhenAllocationEmployeeNameIsMissing() {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO().employeeName(null))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+            new ValidationError(ALLOCATION_EMPLOYEE_NAME, ALLOCATION_EMPLOYEE_NAME.concat(MISSING)),
+            exception.getValidationErrors().getError(0)
+        );
+    }
+
+    @Test
+    void testValidateWhenAllocationEmployeeNameExceedsLength() {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO()
+                .employeeName(rightPad("x", ALLOCATION_EMPLOYEE_NAME_MAX_LENGTH + 1, "x")))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+            new ValidationError(ALLOCATION_EMPLOYEE_NAME, ALLOCATION_EMPLOYEE_NAME.concat(EXCEEDS_MAX_LENGTH)),
+            exception.getValidationErrors().getError(0)
+        );
+    }
+
+    @Test
+    void testValidateWhenAllocationEmployeeEmailIsMissing() {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO().employeeEmail(null))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+            new ValidationError(ALLOCATION_EMPLOYEE_EMAIL, ALLOCATION_EMPLOYEE_EMAIL.concat(MISSING)),
+            exception.getValidationErrors().getError(0)
+        );
+    }
+
+    @Test
+    void testValidateWhenAllocationEmployeeEmailExceedsLength() {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO()
+                .employeeEmail(rightPad("x", ALLOCATION_EMPLOYEE_EMAIL_MAX_LENGTH + 1, "x")))
+        );
+        assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
+        assertEquals(
+            new ValidationError(ALLOCATION_EMPLOYEE_EMAIL, ALLOCATION_EMPLOYEE_EMAIL.concat(EXCEEDS_MAX_LENGTH)),
+            exception.getValidationErrors().getError(0)
+        );
+    }
+
 }
