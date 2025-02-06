@@ -10,5 +10,4 @@ public class AllocationCannotBeDeletedException extends InvalidRequestException 
     public AllocationCannotBeDeletedException() {
         super(new ValidationError(ALLOCATION_ID, ALLOCATION_ID + IN_THE_PAST));
     }
-
 }
