@@ -3,18 +3,13 @@ package com.github.erf88.realmeet.validator;
 import static com.github.erf88.realmeet.util.DateUtils.now;
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
-import static java.util.Objects.isNull;
 
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
-import com.github.erf88.realmeet.api.model.CreateRoomDTO;
-import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
-import com.github.erf88.realmeet.util.DateUtils;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Objects;
-import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -37,48 +32,70 @@ public class AllocationValidator {
 
     private static void validateEmployeeName(String employeeName, ValidationErrors validationErrors) {
         validateRequired(employeeName, ALLOCATION_EMPLOYEE_NAME, validationErrors);
-        validateMaxLength(employeeName, ALLOCATION_EMPLOYEE_NAME, ALLOCATION_EMPLOYEE_NAME_MAX_LENGTH, validationErrors);
+        validateMaxLength(
+            employeeName,
+            ALLOCATION_EMPLOYEE_NAME,
+            ALLOCATION_EMPLOYEE_NAME_MAX_LENGTH,
+            validationErrors
+        );
     }
+
     private static void validateEmployeeEmail(String employeeEmail, ValidationErrors validationErrors) {
         validateRequired(employeeEmail, ALLOCATION_EMPLOYEE_EMAIL, validationErrors);
-        validateMaxLength(employeeEmail, ALLOCATION_EMPLOYEE_EMAIL, ALLOCATION_EMPLOYEE_EMAIL_MAX_LENGTH, validationErrors);
+        validateMaxLength(
+            employeeEmail,
+            ALLOCATION_EMPLOYEE_EMAIL,
+            ALLOCATION_EMPLOYEE_EMAIL_MAX_LENGTH,
+            validationErrors
+        );
     }
 
     private void validateDates(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
-        if(validateDatesPresent(startAt, endAt, validationErrors)) {
+        if (validateDatesPresent(startAt, endAt, validationErrors)) {
             validateDatesOrdering(startAt, endAt, validationErrors);
             validateDatesInTheFuture(startAt, validationErrors);
             validateDuration(startAt, endAt, validationErrors);
-            validateIfTimeAvailable(startAt, endAt, validationErrors);
         }
     }
 
-    private boolean validateDatesPresent(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
+    private boolean validateDatesPresent(
+        OffsetDateTime startAt,
+        OffsetDateTime endAt,
+        ValidationErrors validationErrors
+    ) {
         return (
             validateRequired(startAt, ALLOCATION_START_AT, validationErrors) &&
             validateRequired(endAt, ALLOCATION_END_AT, validationErrors)
         );
     }
 
-    private void validateDatesOrdering(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
-        if(startAt.isEqual(endAt) || startAt.isAfter(endAt)) {
+    private void validateDatesOrdering(
+        OffsetDateTime startAt,
+        OffsetDateTime endAt,
+        ValidationErrors validationErrors
+    ) {
+        if (startAt.isEqual(endAt) || startAt.isAfter(endAt)) {
             validationErrors.add(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(INCONSISTENT));
         }
     }
 
     private void validateDatesInTheFuture(OffsetDateTime date, ValidationErrors validationErrors) {
-        if(date.isBefore(now())) {
+        if (date.isBefore(now())) {
             validationErrors.add(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(IN_THE_PAST));
         }
     }
 
     private void validateDuration(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
-        if(Duration.between(startAt, endAt).getSeconds() > ALLOCATION_MAX_DURATION_SECONDS) {
+        if (Duration.between(startAt, endAt).getSeconds() > ALLOCATION_MAX_DURATION_SECONDS) {
             validationErrors.add(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(EXCEEDS_DURATION));
         }
     }
 
-    private void validateIfTimeAvailable(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
+    private void validateIfTimeAvailable(
+        OffsetDateTime startAt,
+        OffsetDateTime endAt,
+        ValidationErrors validationErrors
+    ) {
         //TODO
     }
 }

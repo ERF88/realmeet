@@ -58,9 +58,6 @@ class AllocationApiIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void testCreateAllocationWhenRoomDoesNotExist() {
-        assertThrows(
-            HttpClientErrorException.NotFound.class,
-            () -> api.createAllocation(newCreateAllocationDTO())
-        );
+        assertThrows(HttpClientErrorException.NotFound.class, () -> api.createAllocation(newCreateAllocationDTO()));
     }
 }

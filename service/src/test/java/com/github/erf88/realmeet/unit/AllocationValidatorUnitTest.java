@@ -56,8 +56,8 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
     void testValidateWhenAllocationSubjectExceedsLength() {
         InvalidRequestException exception = assertThrows(
             InvalidRequestException.class,
-            () -> victim.validate(newCreateAllocationDTO()
-                .subject(rightPad("x", ALLOCATION_SUBJECT_MAX_LENGTH + 1, "x")))
+            () ->
+                victim.validate(newCreateAllocationDTO().subject(rightPad("x", ALLOCATION_SUBJECT_MAX_LENGTH + 1, "x")))
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
@@ -83,8 +83,10 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
     void testValidateWhenAllocationEmployeeNameExceedsLength() {
         InvalidRequestException exception = assertThrows(
             InvalidRequestException.class,
-            () -> victim.validate(newCreateAllocationDTO()
-                .employeeName(rightPad("x", ALLOCATION_EMPLOYEE_NAME_MAX_LENGTH + 1, "x")))
+            () ->
+                victim.validate(
+                    newCreateAllocationDTO().employeeName(rightPad("x", ALLOCATION_EMPLOYEE_NAME_MAX_LENGTH + 1, "x"))
+                )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
@@ -110,8 +112,10 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
     void testValidateWhenAllocationEmployeeEmailExceedsLength() {
         InvalidRequestException exception = assertThrows(
             InvalidRequestException.class,
-            () -> victim.validate(newCreateAllocationDTO()
-                .employeeEmail(rightPad("x", ALLOCATION_EMPLOYEE_EMAIL_MAX_LENGTH + 1, "x")))
+            () ->
+                victim.validate(
+                    newCreateAllocationDTO().employeeEmail(rightPad("x", ALLOCATION_EMPLOYEE_EMAIL_MAX_LENGTH + 1, "x"))
+                )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
@@ -123,69 +127,73 @@ public class AllocationValidatorUnitTest extends BaseUnitTest {
     @Test
     void testValidateWhenAllocationStartAtIsMissing() {
         InvalidRequestException exception = assertThrows(
-                InvalidRequestException.class,
-                () -> victim.validate(newCreateAllocationDTO().startAt(null))
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO().startAt(null))
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
-                new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(MISSING)),
-                exception.getValidationErrors().getError(0)
+            new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(MISSING)),
+            exception.getValidationErrors().getError(0)
         );
     }
 
     @Test
     void testValidateWhenAllocationEndAtIsMissing() {
         InvalidRequestException exception = assertThrows(
-                InvalidRequestException.class,
-                () -> victim.validate(newCreateAllocationDTO().endAt(null))
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO().endAt(null))
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
-                new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(MISSING)),
-                exception.getValidationErrors().getError(0)
+            new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(MISSING)),
+            exception.getValidationErrors().getError(0)
         );
     }
 
     @Test
     void testValidateWhenAllocationDateOrderIsInvalid() {
         InvalidRequestException exception = assertThrows(
-                InvalidRequestException.class,
-                () -> victim
-                    .validate(newCreateAllocationDTO().startAt(now().plusDays(1)).endAt(now().plusDays(1).minusMinutes(30)))
+            InvalidRequestException.class,
+            () ->
+                victim.validate(
+                    newCreateAllocationDTO().startAt(now().plusDays(1)).endAt(now().plusDays(1).minusMinutes(30))
+                )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
-                new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(INCONSISTENT)),
-                exception.getValidationErrors().getError(0)
+            new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(INCONSISTENT)),
+            exception.getValidationErrors().getError(0)
         );
     }
 
     @Test
     void testValidateWhenAllocationDateIsInThePast() {
         InvalidRequestException exception = assertThrows(
-                InvalidRequestException.class,
-                () -> victim
-                    .validate(newCreateAllocationDTO().startAt(now().minusMinutes(30)).endAt(now().plusMinutes(30)))
+            InvalidRequestException.class,
+            () -> victim.validate(newCreateAllocationDTO().startAt(now().minusMinutes(30)).endAt(now().plusMinutes(30)))
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
-                new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(IN_THE_PAST)),
-                exception.getValidationErrors().getError(0)
+            new ValidationError(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(IN_THE_PAST)),
+            exception.getValidationErrors().getError(0)
         );
     }
 
     @Test
     void testValidateWhenAllocationDateIntervalExceedsMaxDuration() {
         InvalidRequestException exception = assertThrows(
-                InvalidRequestException.class,
-                () -> victim
-                    .validate(newCreateAllocationDTO()
-                        .startAt(now().plusDays(1)).endAt(now().plusDays(1).plusSeconds(ALLOCATION_MAX_DURATION_SECONDS + 1)))
+            InvalidRequestException.class,
+            () ->
+                victim.validate(
+                    newCreateAllocationDTO()
+                        .startAt(now().plusDays(1))
+                        .endAt(now().plusDays(1).plusSeconds(ALLOCATION_MAX_DURATION_SECONDS + 1))
+                )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
-                new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(EXCEEDS_DURATION)),
-                exception.getValidationErrors().getError(0)
+            new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(EXCEEDS_DURATION)),
+            exception.getValidationErrors().getError(0)
         );
     }
 }
