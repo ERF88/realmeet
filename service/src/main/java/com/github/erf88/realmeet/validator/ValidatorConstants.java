@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class ValidatorConstants {
+    public static final String ALLOCATION_ID = "id";
     public static final String ALLOCATION_SUBJECT = "subject";
     public static final String ALLOCATION_START_AT = "startAt";
     public static final String ALLOCATION_END_AT = "endAt";

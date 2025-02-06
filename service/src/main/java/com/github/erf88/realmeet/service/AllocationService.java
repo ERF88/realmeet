@@ -6,8 +6,10 @@ import com.github.erf88.realmeet.domain.entity.Allocation;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
+import com.github.erf88.realmeet.exception.AllocationCannotBeDeletedException;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.mapper.AllocationMapper;
+import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.validator.AllocationValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,14 @@ public class AllocationService {
     }
 
     public void deleteAllocation(Long id) {
+        Allocation allocation = allocationRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
 
+        if (allocation.getEndAt().isBefore(DateUtils.now())) {
+            throw new AllocationCannotBeDeletedException();
+        }
+
+        allocationRepository.delete(allocation);
     }
 }
