@@ -27,6 +27,7 @@ public class RoomService {
         return roomMapper.toRoomDTO(room);
     }
 
+    @Transactional
     public RoomDTO createRoom(CreateRoomDTO createRoomDTO) {
         roomValidator.validate(createRoomDTO);
         Room room = roomMapper.toRoom(createRoomDTO);

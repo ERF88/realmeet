@@ -2,6 +2,7 @@ package com.github.erf88.realmeet.service;
 
 import com.github.erf88.realmeet.api.model.AllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
+import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
 import com.github.erf88.realmeet.domain.entity.Allocation;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
@@ -13,6 +14,7 @@ import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.validator.AllocationValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class AllocationService {
     private final AllocationValidator allocationValidator;
     private final RoomRepository roomRepository;
 
+    @Transactional
     public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
         Room room = roomRepository
             .findById(createAllocationDTO.getRoomId())
@@ -33,15 +36,32 @@ public class AllocationService {
         return allocationMapper.toAllocationDTO(allocation);
     }
 
+    @Transactional
     public void deleteAllocation(Long id) {
-        Allocation allocation = allocationRepository
-            .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
+        Allocation allocation = getAllocationOrThrow(id);
 
         if (allocation.getEndAt().isBefore(DateUtils.now())) {
             throw new AllocationCannotBeDeletedException();
         }
 
         allocationRepository.delete(allocation);
+    }
+
+    @Transactional
+    public void updateAllocation(Long id, UpdateAllocationDTO updateAllocationDTO) {
+        getAllocationOrThrow(id);
+
+        allocationRepository.updateAllocation(
+            id,
+            updateAllocationDTO.getSubject(),
+            updateAllocationDTO.getStartAt(),
+            updateAllocationDTO.getEndAt()
+        );
+    }
+
+    private Allocation getAllocationOrThrow(Long id) {
+        return allocationRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
     }
 }
