@@ -4,6 +4,7 @@ import static com.github.erf88.realmeet.utils.TestConstants.*;
 
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
+import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
 import com.github.erf88.realmeet.domain.entity.Allocation;
 import com.github.erf88.realmeet.domain.entity.Employee;
 import com.github.erf88.realmeet.domain.entity.Room;
@@ -37,6 +38,13 @@ public final class TestDataCreator {
             .subject(DEFAULT_ALLOCATION_SUBJECT)
             .employeeName(DEFAULT_EMPLOYEE_NAME)
             .employeeEmail(DEFAULT_EMPLOYEE_EMAIL)
+            .startAt(DEFAULT_ALLOCATION_START_AT)
+            .endAt(DEFAULT_ALLOCATION_END_AT);
+    }
+
+    public static UpdateAllocationDTO newUpdateAllocationDTO() {
+        return new UpdateAllocationDTO()
+            .subject(DEFAULT_ALLOCATION_SUBJECT)
             .startAt(DEFAULT_ALLOCATION_START_AT)
             .endAt(DEFAULT_ALLOCATION_END_AT);
     }

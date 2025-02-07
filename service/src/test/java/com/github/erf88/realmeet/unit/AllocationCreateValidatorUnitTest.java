@@ -1,29 +1,22 @@
 package com.github.erf88.realmeet.unit;
 
 import static com.github.erf88.realmeet.util.DateUtils.now;
-import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_NAME;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateAllocationDTO;
-import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateRoomDTO;
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static org.apache.commons.lang3.StringUtils.rightPad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
 
 import com.github.erf88.realmeet.core.BaseUnitTest;
-import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
-import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.InvalidRequestException;
 import com.github.erf88.realmeet.validator.AllocationValidator;
-import com.github.erf88.realmeet.validator.RoomValidator;
 import com.github.erf88.realmeet.validator.ValidationError;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-public class AllocationValidatorUnitTest extends BaseUnitTest {
+public class AllocationCreateValidatorUnitTest extends BaseUnitTest {
     private AllocationValidator victim;
 
     @Mock
