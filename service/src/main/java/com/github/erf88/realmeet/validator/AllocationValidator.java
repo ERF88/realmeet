@@ -5,6 +5,8 @@ import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
 
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
+import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
+import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -22,6 +24,14 @@ public class AllocationValidator {
         validateEmployeeName(createAllocationDTO.getEmployeeName(), validationErrors);
         validateEmployeeEmail(createAllocationDTO.getEmployeeEmail(), validationErrors);
         validateDates(createAllocationDTO.getStartAt(), createAllocationDTO.getEndAt(), validationErrors);
+        throwOnError(validationErrors);
+    }
+
+    public void validate(Long id, UpdateAllocationDTO updateAllocationDTO) {
+        ValidationErrors validationErrors = new ValidationErrors();
+        validateRequired(id, ALLOCATION_ID, validationErrors);
+        validateSubject(updateAllocationDTO.getSubject(), validationErrors);
+        validateDates(updateAllocationDTO.getStartAt(), updateAllocationDTO.getEndAt(), validationErrors);
         throwOnError(validationErrors);
     }
 

@@ -8,6 +8,7 @@ import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.exception.AllocationCannotBeDeletedException;
+import com.github.erf88.realmeet.exception.AllocationCannotBeUpdatedException;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.mapper.AllocationMapper;
 import com.github.erf88.realmeet.util.DateUtils;
@@ -40,7 +41,7 @@ public class AllocationService {
     public void deleteAllocation(Long id) {
         Allocation allocation = getAllocationOrThrow(id);
 
-        if (allocation.getEndAt().isBefore(DateUtils.now())) {
+        if (isAllocationInThePast(allocation)) {
             throw new AllocationCannotBeDeletedException();
         }
 
@@ -49,8 +50,13 @@ public class AllocationService {
 
     @Transactional
     public void updateAllocation(Long id, UpdateAllocationDTO updateAllocationDTO) {
-        getAllocationOrThrow(id);
+        Allocation allocation = getAllocationOrThrow(id);
 
+        if (isAllocationInThePast(allocation)) {
+            throw new AllocationCannotBeUpdatedException();
+        }
+        
+        allocationValidator.validate(id, updateAllocationDTO);
         allocationRepository.updateAllocation(
             id,
             updateAllocationDTO.getSubject(),
@@ -63,5 +69,9 @@ public class AllocationService {
         return allocationRepository
             .findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
+    }
+
+    private boolean isAllocationInThePast(Allocation allocation) {
+        return allocation.getEndAt().isBefore(DateUtils.now());
     }
 }
