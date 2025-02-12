@@ -1,12 +1,14 @@
 package com.github.erf88.realmeet.integration;
 
-import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ALLOCATION_ID;
+import static com.github.erf88.realmeet.utils.TestConstants.*;
 import static com.github.erf88.realmeet.utils.TestDataCreator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.erf88.realmeet.api.facade.AllocationApi;
 import com.github.erf88.realmeet.api.model.AllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
+import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
+import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
 import com.github.erf88.realmeet.core.BaseIntegrationTest;
 import com.github.erf88.realmeet.domain.entity.Allocation;
 import com.github.erf88.realmeet.domain.entity.Room;
@@ -92,5 +94,44 @@ class AllocationApiIntegrationTest extends BaseIntegrationTest {
     @Test
     void testDeleteAllocationDoesNotExist() {
         assertThrows(HttpClientErrorException.NotFound.class, () -> api.deleteAllocation(DEFAULT_ALLOCATION_ID));
+    }
+
+    @Test
+    void testUpdateAllocationSuccess() {
+        Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
+        CreateAllocationDTO createAllocationDTO = newCreateAllocationDTO().roomId(room.getId());
+        AllocationDTO allocationDTO = api.createAllocation(createAllocationDTO);
+
+        UpdateAllocationDTO updateAllocationDTO = newUpdateAllocationDTO()
+                .subject(DEFAULT_ALLOCATION_SUBJECT + "_")
+                .startAt(DEFAULT_ALLOCATION_START_AT.plusDays(1))
+                .endAt(DEFAULT_ALLOCATION_END_AT.plusDays(1));
+
+        api.updateAllocation(allocationDTO.getId(), updateAllocationDTO);
+        Allocation allocation = allocationRepository.findById(allocationDTO.getId()).orElseThrow();
+
+        assertEquals(updateAllocationDTO.getSubject(), allocation.getSubject());
+        assertTrue(updateAllocationDTO.getStartAt().isEqual(allocation.getStartAt()));
+        assertTrue(updateAllocationDTO.getEndAt().isEqual(allocation.getEndAt()));
+    }
+
+    @Test
+    void testUpdateAllocationDoesNotExists() {
+        assertThrows(
+            HttpClientErrorException.class,
+            () -> api.updateAllocation(DEFAULT_ALLOCATION_ID, newUpdateAllocationDTO())
+        );
+    }
+
+    @Test
+    void testUpdateAllocationValidationError() {
+        Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
+        CreateAllocationDTO createAllocationDTO = newCreateAllocationDTO().roomId(room.getId());
+        AllocationDTO allocationDTO = api.createAllocation(createAllocationDTO);
+
+        assertThrows(
+            HttpClientErrorException.UnprocessableEntity.class,
+            () -> api.updateAllocation(allocationDTO.getId(), newUpdateAllocationDTO().subject(null))
+        );
     }
 }
