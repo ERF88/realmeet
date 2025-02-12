@@ -1,5 +1,8 @@
 package com.github.erf88.realmeet.service;
 
+import static com.github.erf88.realmeet.util.DateUtils.DEFAULT_TIMEZONE;
+import static java.util.Objects.isNull;
+
 import com.github.erf88.realmeet.api.model.AllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
@@ -14,7 +17,9 @@ import com.github.erf88.realmeet.mapper.AllocationMapper;
 import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.validator.AllocationValidator;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +78,17 @@ public class AllocationService {
     }
 
     public List<AllocationDTO> listAllocations(String employeeEmail, Long roomId, LocalDate startAt, LocalDate endAt) {
-        return null;
+        List<Allocation> allocations = allocationRepository.findAllWithFilters(
+            employeeEmail,
+            roomId,
+            isNull(startAt) ? null : startAt.atTime(LocalTime.MIN).atOffset(DEFAULT_TIMEZONE),
+            isNull(endAt) ? null : endAt.atTime(LocalTime.MAX).atOffset(DEFAULT_TIMEZONE)
+        );
+
+        return allocations
+            .stream()
+            .map(allocationMapper::toAllocationDTO)
+            .toList();
     }
 
     private boolean isAllocationInThePast(Allocation allocation) {
