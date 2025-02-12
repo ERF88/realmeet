@@ -13,7 +13,11 @@ import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.mapper.AllocationMapper;
 import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.validator.AllocationValidator;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,6 +70,10 @@ public class AllocationService {
 
     private Allocation getAllocationOrThrow(Long id) {
         return allocationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
+    }
+
+    public List<AllocationDTO> listAllocations(String employeeEmail, Long roomId, LocalDate startAt, LocalDate endAt) {
+        return null;
     }
 
     private boolean isAllocationInThePast(Allocation allocation) {

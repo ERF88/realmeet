@@ -9,6 +9,8 @@ import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
 import com.github.erf88.realmeet.service.AllocationService;
 import com.github.erf88.realmeet.util.ResponseEntityUtils;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +39,17 @@ public class AllocationController implements AllocationsApi {
     public CompletableFuture<ResponseEntity<Void>> updateAllocation(Long id, UpdateAllocationDTO updateAllocationDTO) {
         return runAsync(() -> allocationService.updateAllocation(id, updateAllocationDTO), controllersExecutor)
             .thenApply(ResponseEntityUtils::noContent);
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<List<AllocationDTO>>> listAllocations(
+        String employeeEmail,
+        Long roomId,
+        LocalDate startAt,
+        LocalDate endAt
+    ) {
+        return supplyAsync(
+            () -> allocationService.listAllocations(employeeEmail, roomId, startAt, endAt), controllersExecutor)
+            .thenApply(ResponseEntityUtils::ok);
     }
 }
