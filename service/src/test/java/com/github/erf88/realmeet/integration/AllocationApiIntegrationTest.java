@@ -103,9 +103,9 @@ class AllocationApiIntegrationTest extends BaseIntegrationTest {
         AllocationDTO allocationDTO = api.createAllocation(createAllocationDTO);
 
         UpdateAllocationDTO updateAllocationDTO = newUpdateAllocationDTO()
-                .subject(DEFAULT_ALLOCATION_SUBJECT + "_")
-                .startAt(DEFAULT_ALLOCATION_START_AT.plusDays(1))
-                .endAt(DEFAULT_ALLOCATION_END_AT.plusDays(1));
+            .subject(DEFAULT_ALLOCATION_SUBJECT + "_")
+            .startAt(DEFAULT_ALLOCATION_START_AT.plusDays(1))
+            .endAt(DEFAULT_ALLOCATION_END_AT.plusDays(1));
 
         api.updateAllocation(allocationDTO.getId(), updateAllocationDTO);
         Allocation allocation = allocationRepository.findById(allocationDTO.getId()).orElseThrow();

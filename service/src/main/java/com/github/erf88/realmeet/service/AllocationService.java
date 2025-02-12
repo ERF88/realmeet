@@ -55,7 +55,6 @@ public class AllocationService {
         if (isAllocationInThePast(allocation)) {
             throw new AllocationCannotBeUpdatedException();
         }
-        
         allocationValidator.validate(id, updateAllocationDTO);
         allocationRepository.updateAllocation(
             id,
@@ -66,9 +65,7 @@ public class AllocationService {
     }
 
     private Allocation getAllocationOrThrow(Long id) {
-        return allocationRepository
-            .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
+        return allocationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
     }
 
     private boolean isAllocationInThePast(Allocation allocation) {

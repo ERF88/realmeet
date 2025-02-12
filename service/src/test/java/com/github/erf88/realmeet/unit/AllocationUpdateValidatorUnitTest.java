@@ -64,7 +64,10 @@ public class AllocationUpdateValidatorUnitTest extends BaseUnitTest {
         InvalidRequestException exception = assertThrows(
             InvalidRequestException.class,
             () ->
-                victim.validate(DEFAULT_ALLOCATION_ID, newUpdateAllocationDTO().subject(rightPad("x", ALLOCATION_SUBJECT_MAX_LENGTH + 1, "x")))
+                victim.validate(
+                    DEFAULT_ALLOCATION_ID,
+                    newUpdateAllocationDTO().subject(rightPad("x", ALLOCATION_SUBJECT_MAX_LENGTH + 1, "x"))
+                )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
@@ -120,10 +123,11 @@ public class AllocationUpdateValidatorUnitTest extends BaseUnitTest {
     void testValidateWhenAllocationDateIsInThePast() {
         InvalidRequestException exception = assertThrows(
             InvalidRequestException.class,
-            () -> victim.validate(
-                DEFAULT_ALLOCATION_ID,
-                newUpdateAllocationDTO().startAt(now().minusMinutes(30)).endAt(now().plusMinutes(30))
-            )
+            () ->
+                victim.validate(
+                    DEFAULT_ALLOCATION_ID,
+                    newUpdateAllocationDTO().startAt(now().minusMinutes(30)).endAt(now().plusMinutes(30))
+                )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
         assertEquals(
