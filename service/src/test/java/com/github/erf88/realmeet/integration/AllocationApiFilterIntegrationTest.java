@@ -10,6 +10,7 @@ import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
 import com.github.erf88.realmeet.core.BaseIntegrationTest;
 import com.github.erf88.realmeet.domain.entity.Allocation;
+import com.github.erf88.realmeet.domain.entity.Employee;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
@@ -39,7 +40,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void filterAllAllocations() {
+    void testFilterAllAllocations() {
         Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
 
         Allocation allocation1 = allocationRepository.saveAndFlush(
@@ -65,5 +66,56 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         assertEquals(allocation1.getSubject(), allocationDTOS.get(0).getSubject());
         assertEquals(allocation2.getSubject(), allocationDTOS.get(1).getSubject());
         assertEquals(allocation3.getSubject(), allocationDTOS.get(2).getSubject());
+    }
+
+    @Test
+    void testFilterAllocationsByRoomId() {
+        Room roomA = roomRepository.saveAndFlush(newRoomBuilder().name(DEFAULT_ROOM_NAME + "A").build());
+        Room roomB = roomRepository.saveAndFlush(newRoomBuilder().name(DEFAULT_ROOM_NAME + "A").build());
+
+        Allocation allocation1 = allocationRepository.saveAndFlush(newAllocationBuilder().room(roomA).build());
+        Allocation allocation2 = allocationRepository.saveAndFlush(newAllocationBuilder().room(roomA).build());
+        allocationRepository.saveAndFlush(newAllocationBuilder().room(roomB).build());
+
+        List<AllocationDTO> allocationDTOS = api.listAllocations(
+            null,
+            roomA.getId(),
+            null,
+            null
+        );
+
+        assertEquals(2, allocationDTOS.size());
+        assertEquals(allocation1.getId(), allocationDTOS.get(0).getId());
+        assertEquals(allocation2.getId(), allocationDTOS.get(1).getId());
+    }
+
+    @Test
+    void testFilterAllocationsByEmployeeEmail() {
+        Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
+        Employee employee1 = newEmployeeBuilder().email(DEFAULT_EMPLOYEE_EMAIL + 1).build();
+        Employee employee2 = newEmployeeBuilder().email(DEFAULT_EMPLOYEE_EMAIL + 2).build();
+
+        Allocation allocation1 = allocationRepository.saveAndFlush(
+            newAllocationBuilder().room(room).employee(employee1).build()
+        );
+
+        Allocation allocation2 = allocationRepository.saveAndFlush(
+            newAllocationBuilder().room(room).employee(employee1).build()
+        );
+
+        Allocation allocation3 = allocationRepository.saveAndFlush(
+            newAllocationBuilder().room(room).employee(employee2).build()
+        );
+
+        List<AllocationDTO> allocationDTOS = api.listAllocations(
+            employee1.getEmail(),
+            null,
+            null,
+            null
+        );
+
+        assertEquals(2, allocationDTOS.size());
+        assertEquals(allocation1.getId(), allocationDTOS.get(0).getId());
+        assertEquals(allocation2.getId(), allocationDTOS.get(1).getId());
     }
 }
