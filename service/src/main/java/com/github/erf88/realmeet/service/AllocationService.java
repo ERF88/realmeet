@@ -77,7 +77,14 @@ public class AllocationService {
         return allocationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Allocation", id));
     }
 
-    public List<AllocationDTO> listAllocations(String employeeEmail, Long roomId, LocalDate startAt, LocalDate endAt) {
+    public List<AllocationDTO> listAllocations(
+        String employeeEmail,
+        Long roomId,
+        LocalDate startAt,
+        LocalDate endAt,
+        String orderBy,
+        Integer limit
+    ) {
         List<Allocation> allocations = allocationRepository.findAllWithFilters(
             employeeEmail,
             roomId,
