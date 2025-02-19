@@ -15,6 +15,7 @@ import com.github.erf88.realmeet.exception.AllocationCannotBeUpdatedException;
 import com.github.erf88.realmeet.exception.ResourceNotFoundException;
 import com.github.erf88.realmeet.mapper.AllocationMapper;
 import com.github.erf88.realmeet.util.DateUtils;
+import com.github.erf88.realmeet.util.PageUtils;
 import com.github.erf88.realmeet.validator.AllocationValidator;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,11 +88,13 @@ public class AllocationService {
         String orderBy,
         Integer limit
     ) {
+        Pageable pageable = PageUtils.newPageable(null, limit, 0, orderBy, null);
         List<Allocation> allocations = allocationRepository.findAllWithFilters(
             employeeEmail,
             roomId,
             isNull(startAt) ? null : startAt.atTime(LocalTime.MIN).atOffset(DEFAULT_TIMEZONE),
-            isNull(endAt) ? null : endAt.atTime(LocalTime.MAX).atOffset(DEFAULT_TIMEZONE)
+            isNull(endAt) ? null : endAt.atTime(LocalTime.MAX).atOffset(DEFAULT_TIMEZONE),
+            pageable
         );
 
         return allocations
