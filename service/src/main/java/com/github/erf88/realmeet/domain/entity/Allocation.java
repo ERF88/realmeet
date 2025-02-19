@@ -4,6 +4,7 @@ import static com.github.erf88.realmeet.util.DateUtils.now;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -15,6 +16,8 @@ import org.hibernate.proxy.HibernateProxy;
 @Entity
 @Table(name = "allocation")
 public class Allocation {
+    public static final List<String> SORTABLE_FIELDS = List.of("startAt", "endAt");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.service;
 
+import static com.github.erf88.realmeet.domain.entity.Allocation.SORTABLE_FIELDS;
 import static com.github.erf88.realmeet.util.DateUtils.DEFAULT_TIMEZONE;
 import static java.util.Objects.isNull;
 
@@ -88,7 +89,7 @@ public class AllocationService {
         String orderBy,
         Integer limit
     ) {
-        Pageable pageable = PageUtils.newPageable(null, limit, 0, orderBy, null);
+        Pageable pageable = PageUtils.newPageable(null, limit, 0, orderBy, SORTABLE_FIELDS);
         List<Allocation> allocations = allocationRepository.findAllWithFilters(
             employeeEmail,
             roomId,
