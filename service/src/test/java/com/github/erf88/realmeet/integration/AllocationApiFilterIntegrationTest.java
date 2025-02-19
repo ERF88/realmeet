@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.integration;
 
+import static com.github.erf88.realmeet.util.DateUtils.now;
 import static com.github.erf88.realmeet.utils.TestConstants.*;
 import static com.github.erf88.realmeet.utils.TestDataCreator.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,6 +17,7 @@ import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
 import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.utils.TestDataCreator;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,6 +114,39 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
             null,
             null,
             null
+        );
+
+        assertEquals(2, allocationDTOS.size());
+        assertEquals(allocation1.getId(), allocationDTOS.get(0).getId());
+        assertEquals(allocation2.getId(), allocationDTOS.get(1).getId());
+    }
+
+    @Test
+    void testFilterAllocationsByDateRange() {
+        OffsetDateTime baseStartAt = now().plusDays(2).withHour(14).withMinute(0);
+        OffsetDateTime baseEndAt = now().plusDays(4).withHour(20).withMinute(0);
+
+        Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
+
+        Allocation allocation1 = allocationRepository.saveAndFlush(
+            newAllocationBuilder().room(room).startAt(baseStartAt.plusHours(1)).endAt(baseStartAt.plusHours(2)).build()
+        );
+
+        Allocation allocation2 = allocationRepository.saveAndFlush(
+            newAllocationBuilder().room(room).startAt(baseStartAt.plusHours(4)).endAt(baseStartAt.plusHours(5)).build()
+        );
+
+        Allocation allocation3 = allocationRepository.saveAndFlush(
+            newAllocationBuilder()
+                .room(room).startAt(baseEndAt.plusDays(1)).endAt(baseEndAt.plusDays(3).plusHours(1)).build()
+        );
+        allocationRepository.saveAndFlush(newAllocationBuilder().room(room).build());
+
+        List<AllocationDTO> allocationDTOS = api.listAllocations(
+            null,
+            null,
+             baseStartAt.toLocalDate(),
+             baseEndAt.toLocalDate()
         );
 
         assertEquals(2, allocationDTOS.size());
