@@ -1,7 +1,6 @@
 package com.github.erf88.realmeet.util;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.requireNonNull;
 
 import com.github.erf88.realmeet.exception.InvalidOrderByFieldException;
 import java.util.List;
@@ -37,23 +36,27 @@ public final class PageUtils {
             return Sort.unsorted();
         }
 
-        Stream.of(orderBy.split(","))
-            .map(f -> {
-                String fieldsName;
-                Sort.Order order;
+        return Sort.by(Stream.of(orderBy.split(","))
+            .map(f -> mapToOrder(validSortableFields, f))
+            .toList());
+    }
 
-                if(f.startsWith("-")) {
-                    fieldsName = f.substring(1);
-                    order = Sort.Order.desc(fieldsName);
-                } else {
-                    fieldsName = f;
-                    order = Sort.Order.asc(fieldsName);
-                }
+    private static Sort.Order mapToOrder(List<String> validSortableFields, String field) {
+        String fieldsName;
+        Sort.Order order;
 
-                if(!validSortableFields.contains(fieldsName)) {
-                    throw new InvalidOrderByFieldException();
-                }
-            });
-        return null;
+        if (field.startsWith("-")) {
+            fieldsName = field.substring(1);
+            order = Sort.Order.desc(fieldsName);
+        } else {
+            fieldsName = field;
+            order = Sort.Order.asc(fieldsName);
+        }
+
+        if (!validSortableFields.contains(fieldsName)) {
+            throw new InvalidOrderByFieldException();
+        }
+
+        return order;
     }
 }

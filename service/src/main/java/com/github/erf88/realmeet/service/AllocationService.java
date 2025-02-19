@@ -1,6 +1,7 @@
 package com.github.erf88.realmeet.service;
 
 import static com.github.erf88.realmeet.domain.entity.Allocation.SORTABLE_FIELDS;
+import static com.github.erf88.realmeet.util.Constants.ALLOCATIONS_MAX_FILTER_LIMIT;
 import static com.github.erf88.realmeet.util.DateUtils.DEFAULT_TIMEZONE;
 import static java.util.Objects.isNull;
 
@@ -21,14 +22,11 @@ import com.github.erf88.realmeet.validator.AllocationValidator;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +35,7 @@ public class AllocationService {
     private final AllocationMapper allocationMapper;
     private final AllocationValidator allocationValidator;
     private final RoomRepository roomRepository;
+    @Value(ALLOCATIONS_MAX_FILTER_LIMIT) public final int maxLimit;
 
     @Transactional
     public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
@@ -89,7 +88,7 @@ public class AllocationService {
         String orderBy,
         Integer limit
     ) {
-        Pageable pageable = PageUtils.newPageable(null, limit, 0, orderBy, SORTABLE_FIELDS);
+        Pageable pageable = PageUtils.newPageable(null, limit, maxLimit, orderBy, SORTABLE_FIELDS);
         List<Allocation> allocations = allocationRepository.findAllWithFilters(
             employeeEmail,
             roomId,

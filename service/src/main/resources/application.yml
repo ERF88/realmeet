@@ -31,9 +31,11 @@ logging:
     org.flywaydb: ERROR
 
 # =================================
-# = Thread Pool
+# = RealMeet
 # =================================
-#realmeet:
+realmeet:
+  allocations:
+    maxFilterLimit: 50
 #  executors:
 #    core-pool-size: 10
 #    max-pool-size: 20
