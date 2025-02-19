@@ -16,6 +16,7 @@ public final class ValidatorConstants {
     public static final int ALLOCATION_MAX_DURATION_SECONDS = 4 * 60 * 60;
     public static final String ROOM_ID = "id";
     public static final String ROOM_NAME = "name";
+    public static final String ORDER_BY = "orderBy";
     public static final int ROOM_NAME_MAX_LENGTH = 20;
     public static final String ROOM_SEATS = "seats";
     public static final int ROOM_SEATS_MIN_VALUE = 1;
@@ -28,4 +29,5 @@ public final class ValidatorConstants {
     public static final String INCONSISTENT = ".inconsistent";
     public static final String IN_THE_PAST = ".inThePast";
     public static final String EXCEEDS_DURATION = ".exceedsDuration";
+    public static final String INVALID = ".invalid";
 }
