@@ -22,11 +22,11 @@ import com.github.erf88.realmeet.validator.AllocationValidator;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,9 @@ public class AllocationService {
     private final AllocationMapper allocationMapper;
     private final AllocationValidator allocationValidator;
     private final RoomRepository roomRepository;
-    @Value(ALLOCATIONS_MAX_FILTER_LIMIT) private int maxLimit;
+
+    @Value(ALLOCATIONS_MAX_FILTER_LIMIT)
+    private int maxLimit;
 
     @Transactional
     public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
@@ -98,10 +100,7 @@ public class AllocationService {
             pageable
         );
 
-        return allocations
-            .stream()
-            .map(allocationMapper::toAllocationDTO)
-            .toList();
+        return allocations.stream().map(allocationMapper::toAllocationDTO).toList();
     }
 
     private boolean isAllocationInThePast(Allocation allocation) {

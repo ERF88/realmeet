@@ -4,5 +4,5 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class Constants {
-    public final static String ALLOCATIONS_MAX_FILTER_LIMIT = "${realmeet.allocations.maxFilterLimit:50}";
+    public static final String ALLOCATIONS_MAX_FILTER_LIMIT = "${realmeet.allocations.maxFilterLimit:50}";
 }

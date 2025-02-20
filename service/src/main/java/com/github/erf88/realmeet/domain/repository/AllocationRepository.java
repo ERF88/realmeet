@@ -22,14 +22,12 @@ public interface AllocationRepository extends JpaRepository<Allocation, Long> {
     );
 
     @Query(
-        """
-        SELECT a
-        FROM Allocation a
-        WHERE (:employeeEmail IS NULL OR a.employee.email = :employeeEmail)
-        AND (:roomId IS NULL OR a.room.id = :roomId)
-        AND (:startAt IS NULL OR a.startAt >= :startAt)
-        AND (:endAt IS NULL OR a.endAt <= :endAt)
-        """
+        "SELECT a " +
+        "FROM Allocation a " +
+        "WHERE (:employeeEmail IS NULL OR a.employee.email = :employeeEmail) " +
+        "AND (:roomId IS NULL OR a.room.id = :roomId) " +
+        "AND (:startAt IS NULL OR a.startAt >= :startAt) " +
+        "AND (:endAt IS NULL OR a.endAt <= :endAt)"
     )
     List<Allocation> findAllWithFilters(
         @Param("employeeEmail") String employeeEmail,

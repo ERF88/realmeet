@@ -68,8 +68,7 @@ public class AllocationUpdateValidatorUnitTest extends BaseUnitTest {
                 victim.validate(
                     DEFAULT_ALLOCATION_ID,
                     DEFAULT_ROOM_ID,
-                    newUpdateAllocationDTO()
-                        .subject(rightPad("x", ALLOCATION_SUBJECT_MAX_LENGTH + 1, "x"))
+                    newUpdateAllocationDTO().subject(rightPad("x", ALLOCATION_SUBJECT_MAX_LENGTH + 1, "x"))
                 )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());
@@ -150,8 +149,8 @@ public class AllocationUpdateValidatorUnitTest extends BaseUnitTest {
                     DEFAULT_ALLOCATION_ID,
                     DEFAULT_ROOM_ID,
                     newUpdateAllocationDTO()
-                    .startAt(now().plusDays(1))
-                    .endAt(now().plusDays(1).plusSeconds(ALLOCATION_MAX_DURATION_SECONDS + 1))
+                        .startAt(now().plusDays(1))
+                        .endAt(now().plusDays(1).plusSeconds(ALLOCATION_MAX_DURATION_SECONDS + 1))
                 )
         );
         assertEquals(1, exception.getValidationErrors().getNumberOfErrors());

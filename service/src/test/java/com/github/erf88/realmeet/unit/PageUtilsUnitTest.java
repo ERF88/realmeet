@@ -16,8 +16,7 @@ public class PageUtilsUnitTest extends BaseUnitTest {
 
     @Test
     void testNewPageableWhenPageIsNullAndLimitIsNullAndOrderByIsNull() {
-        Pageable pageable = PageUtils
-            .newPageable(null, null, 10, null, SORTABLE_FIELDS);
+        Pageable pageable = PageUtils.newPageable(null, null, 10, null, SORTABLE_FIELDS);
 
         assertEquals(0, pageable.getPageNumber());
         assertEquals(10, pageable.getPageSize());
@@ -26,34 +25,24 @@ public class PageUtilsUnitTest extends BaseUnitTest {
 
     @Test
     void testNewPageableWhenPageIsNegative() {
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> PageUtils.newPageable(-1, null, 10, null, SORTABLE_FIELDS)
-        );
+        assertThrows(IllegalArgumentException.class, () -> PageUtils.newPageable(-1, null, 10, null, SORTABLE_FIELDS));
     }
 
     @Test
     void testNewPageableWhenLimitIsInvalid() {
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> PageUtils.newPageable(null, 0, 10, null, SORTABLE_FIELDS)
-        );
+        assertThrows(IllegalArgumentException.class, () -> PageUtils.newPageable(null, 0, 10, null, SORTABLE_FIELDS));
     }
 
     @Test
     void testNewPageableWhenLimitExceedsMaximum() {
-        Pageable pageable = PageUtils
-            .newPageable(null, 30, 10, null, SORTABLE_FIELDS);
+        Pageable pageable = PageUtils.newPageable(null, 30, 10, null, SORTABLE_FIELDS);
 
         assertEquals(10, pageable.getPageSize());
     }
 
     @Test
     void testNewPageableWhenOrderByIsNull() {
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> PageUtils.newPageable(null, 0, 10, null, null)
-        );
+        assertThrows(IllegalArgumentException.class, () -> PageUtils.newPageable(null, 0, 10, null, null));
     }
 
     @Test
@@ -66,16 +55,20 @@ public class PageUtilsUnitTest extends BaseUnitTest {
 
     @Test
     void testNewPageableWhenOrderByAscIsValid() {
-        Pageable pageable = PageUtils
-            .newPageable(null, null, 10, SORTABLE_FIELDS.getFirst(), SORTABLE_FIELDS);
+        Pageable pageable = PageUtils.newPageable(null, null, 10, SORTABLE_FIELDS.getFirst(), SORTABLE_FIELDS);
 
         assertEquals(Sort.by(Sort.Order.asc(SORTABLE_FIELDS.getFirst())), pageable.getSort());
     }
 
     @Test
     void testNewPageableWhenOrderByDescIsValid() {
-        Pageable pageable = PageUtils
-            .newPageable(null, null, 10, "-".concat(SORTABLE_FIELDS.getFirst()), SORTABLE_FIELDS);
+        Pageable pageable = PageUtils.newPageable(
+            null,
+            null,
+            10,
+            "-".concat(SORTABLE_FIELDS.getFirst()),
+            SORTABLE_FIELDS
+        );
 
         assertEquals(Sort.by(Sort.Order.desc(SORTABLE_FIELDS.getFirst())), pageable.getSort());
     }

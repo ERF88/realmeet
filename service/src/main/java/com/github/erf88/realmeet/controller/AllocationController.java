@@ -52,8 +52,9 @@ public class AllocationController implements AllocationsApi {
         Integer page
     ) {
         return supplyAsync(
-            () -> allocationService
-                .listAllocations(employeeEmail, roomId, startAt, endAt, orderBy, limit, page), controllersExecutor)
-                .thenApply(ResponseEntityUtils::ok);
+                () -> allocationService.listAllocations(employeeEmail, roomId, startAt, endAt, orderBy, limit, page),
+                controllersExecutor
+            )
+            .thenApply(ResponseEntityUtils::ok);
     }
 }

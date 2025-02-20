@@ -65,15 +65,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
             newAllocationBuilder().room(room).subject(DEFAULT_ALLOCATION_SUBJECT + 3).build()
         );
 
-        List<AllocationDTO> allocationDTOS = api.listAllocations(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+        List<AllocationDTO> allocationDTOS = api.listAllocations(null, null, null, null, null, null, null);
 
         assertEquals(3, allocationDTOS.size());
         assertEquals(allocation1.getSubject(), allocationDTOS.get(0).getSubject());
@@ -90,15 +82,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         Allocation allocation2 = allocationRepository.saveAndFlush(newAllocationBuilder().room(roomA).build());
         allocationRepository.saveAndFlush(newAllocationBuilder().room(roomB).build());
 
-        List<AllocationDTO> allocationDTOS = api.listAllocations(
-            null,
-            roomA.getId(),
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+        List<AllocationDTO> allocationDTOS = api.listAllocations(null, roomA.getId(), null, null, null, null, null);
 
         assertEquals(2, allocationDTOS.size());
         assertEquals(allocation1.getId(), allocationDTOS.get(0).getId());
@@ -155,15 +139,18 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
 
         Allocation allocation3 = allocationRepository.saveAndFlush(
             newAllocationBuilder()
-                .room(room).startAt(baseEndAt.plusDays(1)).endAt(baseEndAt.plusDays(3).plusHours(1)).build()
+                .room(room)
+                .startAt(baseEndAt.plusDays(1))
+                .endAt(baseEndAt.plusDays(3).plusHours(1))
+                .build()
         );
         allocationRepository.saveAndFlush(newAllocationBuilder().room(room).build());
 
         List<AllocationDTO> allocationDTOS = api.listAllocations(
             null,
             null,
-             baseStartAt.toLocalDate(),
-             baseEndAt.toLocalDate(),
+            baseStartAt.toLocalDate(),
+            baseEndAt.toLocalDate(),
             null,
             null,
             null
@@ -179,13 +166,11 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         persistAllocations(15);
         ReflectionTestUtils.setField(allocationService, "maxLimit", 10);
 
-        List<AllocationDTO> allocationListPage1 = api
-            .listAllocations(null, null, null, null, null, null, 0);
+        List<AllocationDTO> allocationListPage1 = api.listAllocations(null, null, null, null, null, null, 0);
 
         assertEquals(10, allocationListPage1.size());
 
-        List<AllocationDTO> allocationListPage2 = api
-            .listAllocations(null, null, null, null, null, null, 1);
+        List<AllocationDTO> allocationListPage2 = api.listAllocations(null, null, null, null, null, null, 1);
 
         assertEquals(5, allocationListPage2.size());
     }
@@ -195,18 +180,15 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         persistAllocations(25);
         ReflectionTestUtils.setField(allocationService, "maxLimit", 50);
 
-        List<AllocationDTO> allocationListPage1 = api
-            .listAllocations(null, null, null, null, null, 10, 0);
+        List<AllocationDTO> allocationListPage1 = api.listAllocations(null, null, null, null, null, 10, 0);
 
         assertEquals(10, allocationListPage1.size());
 
-        List<AllocationDTO> allocationListPage2 = api
-            .listAllocations(null, null, null, null, null, 10, 1);
+        List<AllocationDTO> allocationListPage2 = api.listAllocations(null, null, null, null, null, 10, 1);
 
         assertEquals(10, allocationListPage2.size());
 
-        List<AllocationDTO> allocationListPage3 = api
-            .listAllocations(null, null, null, null, null, 10, 2);
+        List<AllocationDTO> allocationListPage3 = api.listAllocations(null, null, null, null, null, 10, 2);
 
         assertEquals(5, allocationListPage3.size());
     }
@@ -215,8 +197,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
     void testFilterAllocationOrderByStartAtDesc() {
         List<Allocation> allocationsList = persistAllocations(3);
 
-        List<AllocationDTO> allocationDTOList = api
-            .listAllocations(null, null, null, null, "-startAt", null, null);
+        List<AllocationDTO> allocationDTOList = api.listAllocations(null, null, null, null, "-startAt", null, null);
 
         assertEquals(3, allocationDTOList.size());
         assertEquals(allocationsList.get(0).getId(), allocationDTOList.get(2).getId());
@@ -236,15 +217,16 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
         return IntStream
             .range(0, numberOfAllocations)
-            .mapToObj(i ->
-                allocationRepository.saveAndFlush(
-                    newAllocationBuilder()
-                        .room(room)
-                        .subject(DEFAULT_ALLOCATION_SUBJECT.concat("_") + i)
-                        .startAt(DEFAULT_ALLOCATION_START_AT.plusHours(i + 1))
-                        .startAt(DEFAULT_ALLOCATION_END_AT.plusHours(i + 1))
-                        .build()
-                )
+            .mapToObj(
+                i ->
+                    allocationRepository.saveAndFlush(
+                        newAllocationBuilder()
+                            .room(room)
+                            .subject(DEFAULT_ALLOCATION_SUBJECT.concat("_") + i)
+                            .startAt(DEFAULT_ALLOCATION_START_AT.plusHours(i + 1))
+                            .startAt(DEFAULT_ALLOCATION_END_AT.plusHours(i + 1))
+                            .build()
+                    )
             )
             .toList();
     }
