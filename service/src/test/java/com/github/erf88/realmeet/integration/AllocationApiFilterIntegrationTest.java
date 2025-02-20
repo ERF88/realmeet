@@ -15,6 +15,7 @@ import com.github.erf88.realmeet.domain.entity.Employee;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
+import com.github.erf88.realmeet.service.AllocationService;
 import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.utils.TestDataCreator;
 import java.time.OffsetDateTime;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
@@ -33,6 +35,9 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private AllocationRepository allocationRepository;
+
+    @Autowired
+    private AllocationService allocationService;
 
     @Autowired
     private RoomRepository roomRepository;
@@ -168,12 +173,30 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         assertEquals(allocation2.getId(), allocationDTOS.get(1).getId());
     }
 
+    @Test
+    void testFilterAllocationUsingPagination() {
+        persistAllocations(15);
+        ReflectionTestUtils.setField(allocationService, "maxLimit", 10);
+
+        List<AllocationDTO> allocationListPage1 = api
+            .listAllocations(null, null, null, null, null, null, 0);
+
+        assertEquals(10, allocationListPage1.size());
+
+        List<AllocationDTO> allocationListPage2 = api
+            .listAllocations(null, null, null, null, null, null, 1);
+
+        assertEquals(5, allocationListPage2.size());
+    }
+
     private List<Allocation> persistAllocations(int numberOfAllocations) {
+        Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
         return IntStream
             .range(0, numberOfAllocations)
             .mapToObj(i ->
                 allocationRepository.saveAndFlush(
                     newAllocationBuilder()
+                        .room(room)
                         .subject(DEFAULT_ALLOCATION_SUBJECT.concat("_") + i)
                         .startAt(DEFAULT_ALLOCATION_START_AT.plusHours(i + 1))
                         .startAt(DEFAULT_ALLOCATION_END_AT.plusHours(i + 1))

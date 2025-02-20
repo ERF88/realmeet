@@ -35,7 +35,7 @@ public class AllocationService {
     private final AllocationMapper allocationMapper;
     private final AllocationValidator allocationValidator;
     private final RoomRepository roomRepository;
-    @Value(ALLOCATIONS_MAX_FILTER_LIMIT) public final int maxLimit;
+    @Value(ALLOCATIONS_MAX_FILTER_LIMIT) private int maxLimit;
 
     @Transactional
     public AllocationDTO createAllocation(CreateAllocationDTO createAllocationDTO) {
