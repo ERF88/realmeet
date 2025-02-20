@@ -67,7 +67,7 @@ public class AllocationService {
         if (isAllocationInThePast(allocation)) {
             throw new AllocationCannotBeUpdatedException();
         }
-        allocationValidator.validate(id, updateAllocationDTO);
+        allocationValidator.validate(id, allocation.getRoom().getId(), updateAllocationDTO);
         allocationRepository.updateAllocation(
             id,
             updateAllocationDTO.getSubject(),

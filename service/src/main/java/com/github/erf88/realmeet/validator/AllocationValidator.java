@@ -1,5 +1,6 @@
 package com.github.erf88.realmeet.validator;
 
+import static com.github.erf88.realmeet.util.DateUtils.isOverlapping;
 import static com.github.erf88.realmeet.util.DateUtils.now;
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
@@ -7,10 +8,15 @@ import static com.github.erf88.realmeet.validator.ValidatorUtils.*;
 import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
 import com.github.erf88.realmeet.api.model.UpdateRoomDTO;
+import com.github.erf88.realmeet.domain.entity.Allocation;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
+import com.github.erf88.realmeet.util.DateUtils;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,15 +29,21 @@ public class AllocationValidator {
         validateSubject(createAllocationDTO.getSubject(), validationErrors);
         validateEmployeeName(createAllocationDTO.getEmployeeName(), validationErrors);
         validateEmployeeEmail(createAllocationDTO.getEmployeeEmail(), validationErrors);
-        validateDates(createAllocationDTO.getStartAt(), createAllocationDTO.getEndAt(), validationErrors);
+        validateDates(
+            createAllocationDTO.getRoomId(),
+            createAllocationDTO.getStartAt(),
+            createAllocationDTO.getEndAt(),
+            validationErrors
+        );
+
         throwOnError(validationErrors);
     }
 
-    public void validate(Long id, UpdateAllocationDTO updateAllocationDTO) {
+    public void validate(Long allocationId, Long roomId, UpdateAllocationDTO updateAllocationDTO) {
         ValidationErrors validationErrors = new ValidationErrors();
-        validateRequired(id, ALLOCATION_ID, validationErrors);
+        validateRequired(allocationId, ALLOCATION_ID, validationErrors);
         validateSubject(updateAllocationDTO.getSubject(), validationErrors);
-        validateDates(updateAllocationDTO.getStartAt(), updateAllocationDTO.getEndAt(), validationErrors);
+        validateDates(roomId, updateAllocationDTO.getStartAt(), updateAllocationDTO.getEndAt(), validationErrors);
         throwOnError(validationErrors);
     }
 
@@ -60,11 +72,17 @@ public class AllocationValidator {
         );
     }
 
-    private void validateDates(OffsetDateTime startAt, OffsetDateTime endAt, ValidationErrors validationErrors) {
+    private void validateDates(
+        Long roomId,
+        OffsetDateTime startAt,
+        OffsetDateTime endAt,
+        ValidationErrors validationErrors
+    ) {
         if (validateDatesPresent(startAt, endAt, validationErrors)) {
             validateDatesOrdering(startAt, endAt, validationErrors);
             validateDatesInTheFuture(startAt, validationErrors);
             validateDuration(startAt, endAt, validationErrors);
+            validateIfTimeAvailable(roomId, startAt, endAt, validationErrors);
         }
     }
 
@@ -102,10 +120,22 @@ public class AllocationValidator {
     }
 
     private void validateIfTimeAvailable(
+        Long roomId,
         OffsetDateTime startAt,
         OffsetDateTime endAt,
         ValidationErrors validationErrors
     ) {
-        //TODO
+        allocationRepository
+            .findAllWithFilters(
+                null,
+                roomId,
+                now(),
+                null,
+                PageRequest.of(0, Integer.MAX_VALUE, Sort.unsorted())
+            )
+            .stream()
+            .filter(a -> isOverlapping(startAt, endAt, a.getStartAt(), a.getEndAt()))
+            .findFirst()
+            .ifPresent(__ -> validationErrors.add(ALLOCATION_START_AT, ALLOCATION_START_AT.concat(OVERLAPS)));
     }
 }
