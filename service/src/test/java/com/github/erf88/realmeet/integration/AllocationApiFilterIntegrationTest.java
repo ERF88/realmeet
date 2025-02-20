@@ -15,6 +15,7 @@ import com.github.erf88.realmeet.domain.entity.Employee;
 import com.github.erf88.realmeet.domain.entity.Room;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.domain.repository.RoomRepository;
+import com.github.erf88.realmeet.exception.InvalidOrderByFieldException;
 import com.github.erf88.realmeet.service.AllocationService;
 import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.utils.TestDataCreator;
@@ -187,6 +188,48 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
             .listAllocations(null, null, null, null, null, null, 1);
 
         assertEquals(5, allocationListPage2.size());
+    }
+
+    @Test
+    void testFilterAllocationUsingPaginationAndLimit() {
+        persistAllocations(25);
+        ReflectionTestUtils.setField(allocationService, "maxLimit", 50);
+
+        List<AllocationDTO> allocationListPage1 = api
+            .listAllocations(null, null, null, null, null, 10, 0);
+
+        assertEquals(10, allocationListPage1.size());
+
+        List<AllocationDTO> allocationListPage2 = api
+            .listAllocations(null, null, null, null, null, 10, 1);
+
+        assertEquals(10, allocationListPage2.size());
+
+        List<AllocationDTO> allocationListPage3 = api
+            .listAllocations(null, null, null, null, null, 10, 2);
+
+        assertEquals(5, allocationListPage3.size());
+    }
+
+    @Test
+    void testFilterAllocationOrderByStartAtDesc() {
+        List<Allocation> allocationsList = persistAllocations(3);
+
+        List<AllocationDTO> allocationDTOList = api
+            .listAllocations(null, null, null, null, "-startAt", null, null);
+
+        assertEquals(3, allocationDTOList.size());
+        assertEquals(allocationsList.get(0).getId(), allocationDTOList.get(2).getId());
+        assertEquals(allocationsList.get(1).getId(), allocationDTOList.get(1).getId());
+        assertEquals(allocationsList.get(2).getId(), allocationDTOList.get(0).getId());
+    }
+
+    @Test
+    void testFilterAllocationOrderByInvalidField() {
+        assertThrows(
+            HttpClientErrorException.UnprocessableEntity.class,
+            () -> api.listAllocations(null, null, null, null, "invalid", null, null)
+        );
     }
 
     private List<Allocation> persistAllocations(int numberOfAllocations) {
