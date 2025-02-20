@@ -86,9 +86,10 @@ public class AllocationService {
         LocalDate startAt,
         LocalDate endAt,
         String orderBy,
-        Integer limit
+        Integer limit,
+        Integer page
     ) {
-        Pageable pageable = PageUtils.newPageable(null, limit, maxLimit, orderBy, SORTABLE_FIELDS);
+        Pageable pageable = PageUtils.newPageable(page, limit, maxLimit, orderBy, SORTABLE_FIELDS);
         List<Allocation> allocations = allocationRepository.findAllWithFilters(
             employeeEmail,
             roomId,

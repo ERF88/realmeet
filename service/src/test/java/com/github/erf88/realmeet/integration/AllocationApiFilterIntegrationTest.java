@@ -63,6 +63,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
             null,
             null,
             null,
+            null,
             null
         );
 
@@ -84,6 +85,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         List<AllocationDTO> allocationDTOS = api.listAllocations(
             null,
             roomA.getId(),
+            null,
             null,
             null,
             null,
@@ -115,6 +117,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
 
         List<AllocationDTO> allocationDTOS = api.listAllocations(
             employee1.getEmail(),
+            null,
             null,
             null,
             null,
@@ -153,6 +156,7 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
             null,
              baseStartAt.toLocalDate(),
              baseEndAt.toLocalDate(),
+            null,
             null,
             null
         );
