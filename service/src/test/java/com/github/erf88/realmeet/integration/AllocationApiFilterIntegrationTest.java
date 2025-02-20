@@ -19,6 +19,8 @@ import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.utils.TestDataCreator;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -164,5 +166,20 @@ class AllocationApiFilterIntegrationTest extends BaseIntegrationTest {
         assertEquals(2, allocationDTOS.size());
         assertEquals(allocation1.getId(), allocationDTOS.get(0).getId());
         assertEquals(allocation2.getId(), allocationDTOS.get(1).getId());
+    }
+
+    private List<Allocation> persistAllocations(int numberOfAllocations) {
+        return IntStream
+            .range(0, numberOfAllocations)
+            .mapToObj(i ->
+                allocationRepository.saveAndFlush(
+                    newAllocationBuilder()
+                        .subject(DEFAULT_ALLOCATION_SUBJECT.concat("_") + i)
+                        .startAt(DEFAULT_ALLOCATION_START_AT.plusHours(i + 1))
+                        .startAt(DEFAULT_ALLOCATION_END_AT.plusHours(i + 1))
+                        .build()
+                )
+            )
+            .toList();
     }
 }
