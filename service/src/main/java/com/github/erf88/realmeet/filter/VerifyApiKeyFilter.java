@@ -13,15 +13,16 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class VerifyApiKeyFilter extends GenericFilterBean {
 	private static final String HEADER_API_KEY = "api-key";
 
-	private ClientRepository clientRepository;
+	private final ClientRepository clientRepository;
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -30,9 +31,7 @@ public class VerifyApiKeyFilter extends GenericFilterBean {
 
 		String apiKey = request.getHeader(HEADER_API_KEY);
 
-		if(isBlank(apiKey)) {
-			sendUnauthorizedError(response, apiKey);
-		} else if (isValidApiKey(apiKey)) {
+		if(!isBlank(apiKey) && !isValidApiKey(apiKey)) {
 			filterChain.doFilter(servletRequest, servletResponse);
 		} else {
 			sendUnauthorizedError(response, apiKey);
