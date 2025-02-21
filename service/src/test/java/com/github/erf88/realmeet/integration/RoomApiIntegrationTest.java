@@ -1,6 +1,7 @@
 package com.github.erf88.realmeet.integration;
 
 import static com.github.erf88.realmeet.utils.TestConstants.DEFAULT_ROOM_ID;
+import static com.github.erf88.realmeet.utils.TestConstants.TEST_CLIENT_API_KEY;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateRoomDTO;
 import static com.github.erf88.realmeet.utils.TestDataCreator.newRoomBuilder;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +39,7 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
         assertNotNull(room.getId());
         assertTrue(room.getActive());
 
-        RoomDTO roomDTO = api.getRoom(room.getId());
+        RoomDTO roomDTO = api.getRoom(TEST_CLIENT_API_KEY, room.getId());
 
         assertEquals(room.getId(), roomDTO.getId());
         assertEquals(room.getName(), roomDTO.getName());
@@ -51,18 +52,18 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
         roomRepository.saveAndFlush(room);
 
         assertFalse(room.getActive());
-        assertThrows(HttpClientErrorException.class, () -> api.getRoom(room.getId()));
+        assertThrows(HttpClientErrorException.class, () -> api.getRoom(TEST_CLIENT_API_KEY, room.getId()));
     }
 
     @Test
     void testGetRoomDoesNotExist() {
-        assertThrows(HttpClientErrorException.class, () -> api.getRoom(DEFAULT_ROOM_ID));
+        assertThrows(HttpClientErrorException.class, () -> api.getRoom(TEST_CLIENT_API_KEY, DEFAULT_ROOM_ID));
     }
 
     @Test
     void testCreateRoomSuccess() {
         CreateRoomDTO createRoomDTO = newCreateRoomDTO();
-        RoomDTO roomDTO = api.createRoom(createRoomDTO);
+        RoomDTO roomDTO = api.createRoom(TEST_CLIENT_API_KEY, createRoomDTO);
 
         assertNotNull(roomDTO.getId());
         assertEquals(createRoomDTO.getName(), roomDTO.getName());
@@ -77,21 +78,21 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
     void testCreateRoomValidationError() {
         assertThrows(
             HttpClientErrorException.UnprocessableEntity.class,
-            () -> api.createRoom(newCreateRoomDTO().name(null))
+            () -> api.createRoom(TEST_CLIENT_API_KEY, newCreateRoomDTO().name(null))
         );
     }
 
     @Test
     void testDeleteRoomSuccess() {
         Long id = roomRepository.saveAndFlush(newRoomBuilder().build()).getId();
-        api.deleteRoom(id);
+        api.deleteRoom(TEST_CLIENT_API_KEY, id);
 
         assertFalse(roomRepository.findById(id).orElseThrow().getActive());
     }
 
     @Test
     void testDeleteRoomDoesNotExist() {
-        assertThrows(HttpClientErrorException.class, () -> api.deleteRoom(DEFAULT_ROOM_ID));
+        assertThrows(HttpClientErrorException.class, () -> api.deleteRoom(TEST_CLIENT_API_KEY, DEFAULT_ROOM_ID));
     }
 
     @Test
@@ -99,7 +100,7 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
         Room room = roomRepository.saveAndFlush(newRoomBuilder().build());
         UpdateRoomDTO updateRoomDTO = new UpdateRoomDTO().name(room.getName() + "_").seats(room.getSeats() + 1);
 
-        api.updateRoom(room.getId(), updateRoomDTO);
+        api.updateRoom(TEST_CLIENT_API_KEY, room.getId(), updateRoomDTO);
 
         Room updatedRoom = roomRepository.findById(room.getId()).orElseThrow();
 
@@ -111,7 +112,10 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
     void testUpdateRoomDoesNotExists() {
         UpdateRoomDTO updateRoomDTO = new UpdateRoomDTO().name("Room").seats(10);
 
-        assertThrows(HttpClientErrorException.class, () -> api.updateRoom(DEFAULT_ROOM_ID, updateRoomDTO));
+        assertThrows(
+            HttpClientErrorException.class,
+            () -> api.updateRoom(TEST_CLIENT_API_KEY, DEFAULT_ROOM_ID, updateRoomDTO)
+        );
     }
 
     @Test
@@ -121,7 +125,7 @@ class RoomApiIntegrationTest extends BaseIntegrationTest {
 
         assertThrows(
             HttpClientErrorException.UnprocessableEntity.class,
-            () -> api.updateRoom(room.getId(), updateRoomDTO)
+            () -> api.updateRoom(TEST_CLIENT_API_KEY, room.getId(), updateRoomDTO)
         );
     }
 }
