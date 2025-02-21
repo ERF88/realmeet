@@ -1,17 +1,23 @@
 package com.github.erf88.realmeet.unit;
 
+import static com.github.erf88.realmeet.util.DateUtils.DEFAULT_TIMEZONE;
 import static com.github.erf88.realmeet.util.DateUtils.now;
-import static com.github.erf88.realmeet.utils.TestDataCreator.newCreateAllocationDTO;
+import static com.github.erf88.realmeet.utils.TestDataCreator.*;
 import static com.github.erf88.realmeet.validator.ValidatorConstants.*;
 import static org.apache.commons.lang3.StringUtils.rightPad;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 import com.github.erf88.realmeet.core.BaseUnitTest;
 import com.github.erf88.realmeet.domain.repository.AllocationRepository;
 import com.github.erf88.realmeet.exception.InvalidRequestException;
+import com.github.erf88.realmeet.util.DateUtils;
 import com.github.erf88.realmeet.validator.AllocationValidator;
 import com.github.erf88.realmeet.validator.ValidationError;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -188,5 +194,47 @@ public class AllocationCreateValidatorUnitTest extends BaseUnitTest {
             new ValidationError(ALLOCATION_END_AT, ALLOCATION_END_AT.concat(EXCEEDS_DURATION)),
             exception.getValidationErrors().getError(0)
         );
+    }
+
+    @Test
+    void testValidateDateIntervals() {
+        assertTrue(isScheduleAllowed(tomorrowAt(4), tomorrowAt(5), tomorrowAt(1), tomorrowAt(2)));
+        assertTrue(isScheduleAllowed(tomorrowAt(4), tomorrowAt(5), tomorrowAt(6), tomorrowAt(7)));
+        assertTrue(isScheduleAllowed(tomorrowAt(4), tomorrowAt(5), tomorrowAt(3), tomorrowAt(4)));
+        assertTrue(isScheduleAllowed(tomorrowAt(4), tomorrowAt(5), tomorrowAt(5), tomorrowAt(6)));
+        assertFalse(isScheduleAllowed(tomorrowAt(4), tomorrowAt(7), tomorrowAt(4), tomorrowAt(7)));
+        assertFalse(isScheduleAllowed(tomorrowAt(4), tomorrowAt(7), tomorrowAt(4), tomorrowAt(5)));
+        assertFalse(isScheduleAllowed(tomorrowAt(4), tomorrowAt(7), tomorrowAt(6), tomorrowAt(7)));
+        assertFalse(isScheduleAllowed(tomorrowAt(4), tomorrowAt(7), tomorrowAt(3), tomorrowAt(5)));
+        assertFalse(isScheduleAllowed(tomorrowAt(4), tomorrowAt(7), tomorrowAt(6), tomorrowAt(8)));
+    }
+
+    private OffsetDateTime tomorrowAt(int hour) {
+        return OffsetDateTime.of(DateUtils.now().plusDays(1).toLocalDate(), LocalTime.of(hour, 0), DEFAULT_TIMEZONE);
+    }
+
+    private boolean isScheduleAllowed(
+        OffsetDateTime scheduleAllocationStart,
+        OffsetDateTime scheduleAllocationEnd,
+        OffsetDateTime newAllocationStart,
+        OffsetDateTime newAllocationEnd
+    ) {
+        given(allocationRepository.findAllWithFilters(any(), any(), any(), any()))
+            .willReturn(
+                List.of(
+                    newAllocationBuilder()
+                        .room(newRoomBuilder().build())
+                        .startAt(scheduleAllocationStart)
+                        .endAt(scheduleAllocationEnd)
+                        .build()
+                )
+            );
+
+        try {
+            victim.validate(newCreateAllocationDTO().startAt(newAllocationStart).endAt(newAllocationEnd));
+            return true;
+        } catch (InvalidRequestException e) {
+            return false;
+        }
     }
 }

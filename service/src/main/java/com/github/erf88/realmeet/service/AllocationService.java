@@ -24,6 +24,7 @@ import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +93,7 @@ public class AllocationService {
         Integer page
     ) {
         Pageable pageable = PageUtils.newPageable(page, limit, maxLimit, orderBy, SORTABLE_FIELDS);
-        List<Allocation> allocations = allocationRepository.findAllWithFilters(
+        Page<Allocation> allocations = allocationRepository.findAllWithFilters(
             employeeEmail,
             roomId,
             isNull(startAt) ? null : startAt.atTime(LocalTime.MIN).atOffset(DEFAULT_TIMEZONE),
