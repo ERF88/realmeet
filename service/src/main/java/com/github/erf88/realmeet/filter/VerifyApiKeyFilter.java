@@ -2,6 +2,8 @@ package com.github.erf88.realmeet.filter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import com.github.erf88.realmeet.domain.entity.Client;
+import com.github.erf88.realmeet.domain.repository.ClientRepository;
 import java.io.IOException;
 import java.io.Writer;
 import org.springframework.web.filter.GenericFilterBean;
@@ -11,11 +13,16 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class VerifyApiKeyFilter extends GenericFilterBean {
 	private static final String HEADER_API_KEY = "api-key";
+
+	private ClientRepository clientRepository;
+
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -24,6 +31,10 @@ public class VerifyApiKeyFilter extends GenericFilterBean {
 		String apiKey = request.getHeader(HEADER_API_KEY);
 
 		if(isBlank(apiKey)) {
+			sendUnauthorizedError(response, apiKey);
+		} else if (isValidApiKey(apiKey)) {
+			filterChain.doFilter(servletRequest, servletResponse);
+		} else {
 			sendUnauthorizedError(response, apiKey);
 		}
 	}
@@ -39,5 +50,14 @@ public class VerifyApiKeyFilter extends GenericFilterBean {
 		try (Writer out = response.getWriter()) {
 			out.write(errorMessage);
 		}
+	}
+
+	private boolean isValidApiKey(String apiKey) {
+		return clientRepository.findById(apiKey)
+			.filter(Client::getActive)
+			.stream()
+			.peek(c -> log.info("Valid API Key: '{}' ({})", c.getApiKey(), c.getDescription()))
+			.findFirst()
+			.isPresent();
 	}
 }
