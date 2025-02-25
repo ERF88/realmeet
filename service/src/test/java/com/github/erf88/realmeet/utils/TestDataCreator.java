@@ -6,6 +6,7 @@ import com.github.erf88.realmeet.api.model.CreateAllocationDTO;
 import com.github.erf88.realmeet.api.model.CreateRoomDTO;
 import com.github.erf88.realmeet.api.model.UpdateAllocationDTO;
 import com.github.erf88.realmeet.domain.entity.Allocation;
+import com.github.erf88.realmeet.domain.entity.Client;
 import com.github.erf88.realmeet.domain.entity.Employee;
 import com.github.erf88.realmeet.domain.entity.Room;
 import java.time.OffsetDateTime;
@@ -51,5 +52,9 @@ public final class TestDataCreator {
 
     public static Employee.Builder newEmployeeBuilder() {
         return Employee.newBuilder().name(DEFAULT_EMPLOYEE_NAME).email(DEFAULT_EMPLOYEE_EMAIL);
+    }
+
+    public static Client.Builder newClientBuilder() {
+        return Client.newBuilder().apiKey(TEST_CLIENT_API_KEY).description(TEST_CLIENT_DESCRIPTION).active(true);
     }
 }
