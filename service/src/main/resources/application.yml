@@ -21,6 +21,16 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
     open-in-view: false
+  mail:
+    host: smtp.gmail.com
+    username: dev@gmail.com
+    password: password
+    from: dev@gmail.com
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.port: 587
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 # =================================
 # = Logging
