@@ -1,9 +1,8 @@
-package com.github.erf88.realmeet.email;
-
-import lombok.*;
+package com.github.erf88.realmeet.email.model;
 
 import java.util.List;
 import java.util.Map;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
