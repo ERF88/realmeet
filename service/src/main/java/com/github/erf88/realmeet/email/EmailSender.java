@@ -1,12 +1,15 @@
 package com.github.erf88.realmeet.email;
 
+import com.github.erf88.realmeet.email.model.Attachment;
 import com.github.erf88.realmeet.email.model.EmailInfo;
 import com.github.erf88.realmeet.exception.EmailSendingException;
+import jakarta.activation.DataHandler;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.github.erf88.realmeet.util.StringUtils.join;
 import static java.util.Objects.nonNull;
@@ -35,6 +41,7 @@ public class EmailSender {
 
         addBasicDetails(emailInfo, mimeMessage);
         addHtmlBody(emailInfo.getTemplate(), emailInfo.getTemplateData(), multipart);
+        addAttachments(emailInfo.getAttachments(), multipart);
     }
 
     private void addBasicDetails(EmailInfo emailInfo, MimeMessage mimeMessage) {
@@ -68,6 +75,25 @@ public class EmailSender {
             multipart.addBodyPart(messageHtmlPart);
         } catch (MessagingException e) {
             throwEmailSendingException(e, "Error adding HTML content to MIME Message");
+        }
+    }
+
+    private void addAttachments(List<Attachment> attachments, MimeMultipart multipart) {
+        if(nonNull(attachments)){
+            attachments.forEach(attachment -> {
+                try {
+                    MimeBodyPart messageAttachmentPart = new MimeBodyPart();
+                    messageAttachmentPart.setDataHandler(
+                        new DataHandler(
+                            new ByteArrayDataSource(attachment.getInputStream(), attachment.getContentType())
+                        )
+                    );
+                    messageAttachmentPart.setFileName(attachment.getFileName());
+                    multipart.addBodyPart(messageAttachmentPart);
+                } catch (MessagingException | IOException e) {
+                    throwEmailSendingException(e, "Error adding attachments to MIME Message");
+                }
+            });
         }
     }
 
