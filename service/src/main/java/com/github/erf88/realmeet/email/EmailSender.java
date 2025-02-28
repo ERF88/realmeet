@@ -2,9 +2,9 @@ package com.github.erf88.realmeet.email;
 
 import com.github.erf88.realmeet.email.model.EmailInfo;
 import com.github.erf88.realmeet.exception.EmailSendingException;
-import com.github.erf88.realmeet.util.StringUtils;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.context.Context;
 
-import java.util.Objects;
+import java.util.Map;
 
 import static com.github.erf88.realmeet.util.StringUtils.join;
 import static java.util.Objects.nonNull;
@@ -22,7 +23,7 @@ import static java.util.Objects.nonNull;
 @Service
 @RequiredArgsConstructor
 public class EmailSender {
-
+    private static final String TEXT_HTML_CHARSET_UTF_8 = "text/html;charset=utf-8";
     private final JavaMailSender javaMailSender;
     private final ITemplateEngine templateEngine;
 
@@ -33,6 +34,7 @@ public class EmailSender {
         MimeMultipart multipart = new MimeMultipart();
 
         addBasicDetails(emailInfo, mimeMessage);
+        addHtmlBody(emailInfo.getTemplate(), emailInfo.getTemplateData(), multipart);
     }
 
     private void addBasicDetails(EmailInfo emailInfo, MimeMessage mimeMessage) {
@@ -50,6 +52,22 @@ public class EmailSender {
             }
         } catch (MessagingException e) {
             throwEmailSendingException(e, "Error adding data to MIME Message");
+        }
+    }
+
+    private void addHtmlBody(String template, Map<String, Object> templateData, MimeMultipart multipart) {
+        MimeBodyPart messageHtmlPart = new MimeBodyPart();
+        Context context = new Context();
+
+        if(nonNull(templateData)){
+            context.setVariables(templateData);
+        }
+
+        try {
+            messageHtmlPart.setContent(templateEngine.process(template, context), TEXT_HTML_CHARSET_UTF_8);
+            multipart.addBodyPart(messageHtmlPart);
+        } catch (MessagingException e) {
+            throwEmailSendingException(e, "Error adding HTML content to MIME Message");
         }
     }
 
