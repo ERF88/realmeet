@@ -1,17 +1,16 @@
 package com.github.erf88.realmeet.integration;
 
+import static com.github.erf88.realmeet.config.properties.EmailProperties.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.github.erf88.realmeet.config.properties.EmailProperties;
 import com.github.erf88.realmeet.core.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import static com.github.erf88.realmeet.config.properties.EmailProperties.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class EmailConfigPropertiesIntegrationTest extends BaseIntegrationTest {
-
     @Autowired
     private EmailProperties emailProperties;
 

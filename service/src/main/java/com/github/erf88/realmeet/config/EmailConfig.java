@@ -1,17 +1,17 @@
 package com.github.erf88.realmeet.config;
 
+import static com.github.erf88.realmeet.config.properties.EmailProperties.*;
+
 import com.github.erf88.realmeet.config.properties.EmailProperties;
+import java.util.Properties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import java.util.Properties;
-
-import static com.github.erf88.realmeet.config.properties.EmailProperties.*;
-
 @Configuration
 public class EmailConfig {
+
     @Bean
     public JavaMailSender javaMailSender(EmailProperties emailProperties) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

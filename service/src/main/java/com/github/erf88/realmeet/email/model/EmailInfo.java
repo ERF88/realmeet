@@ -32,7 +32,7 @@ public class EmailInfo {
         private String template;
         private Map<String, Object> templateData;
 
-        private Builder() { }
+        private Builder() {}
 
         public Builder from(String from) {
             this.from = from;

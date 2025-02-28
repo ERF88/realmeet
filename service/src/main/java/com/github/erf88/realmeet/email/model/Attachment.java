@@ -12,7 +12,6 @@ public class Attachment {
     private final String contentType;
     private final String fileName;
 
-
     public static final class Builder {
         private InputStream inputStream;
         private String contentType;
@@ -22,7 +21,7 @@ public class Attachment {
             return new Builder();
         }
 
-        private Builder() { }
+        private Builder() {}
 
         public Builder inputStream(InputStream inputStream) {
             this.inputStream = inputStream;

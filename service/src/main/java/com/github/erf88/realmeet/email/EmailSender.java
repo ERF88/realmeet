@@ -1,5 +1,8 @@
 package com.github.erf88.realmeet.email;
 
+import static com.github.erf88.realmeet.util.StringUtils.join;
+import static java.util.Objects.nonNull;
+
 import com.github.erf88.realmeet.email.model.Attachment;
 import com.github.erf88.realmeet.email.model.EmailInfo;
 import com.github.erf88.realmeet.exception.EmailSendingException;
@@ -20,9 +23,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
-
-import static com.github.erf88.realmeet.util.StringUtils.join;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -53,11 +53,11 @@ public class EmailSender {
             mimeMessage.setSubject(emailInfo.getSubject());
             mimeMessage.addRecipients(Message.RecipientType.TO, join(emailInfo.getTo()));
 
-            if(nonNull(emailInfo.getCc())){
+            if (nonNull(emailInfo.getCc())) {
                 mimeMessage.addRecipients(Message.RecipientType.CC, join(emailInfo.getCc()));
             }
 
-            if(nonNull(emailInfo.getBcc())){
+            if (nonNull(emailInfo.getBcc())) {
                 mimeMessage.addRecipients(Message.RecipientType.BCC, join(emailInfo.getBcc()));
             }
         } catch (MessagingException e) {
@@ -69,7 +69,7 @@ public class EmailSender {
         MimeBodyPart messageHtmlPart = new MimeBodyPart();
         Context context = new Context();
 
-        if(nonNull(templateData)){
+        if (nonNull(templateData)) {
             context.setVariables(templateData);
         }
 
@@ -82,21 +82,23 @@ public class EmailSender {
     }
 
     private void addAttachments(List<Attachment> attachments, MimeMultipart multipart) {
-        if(nonNull(attachments)){
-            attachments.forEach(attachment -> {
-                try {
-                    MimeBodyPart messageAttachmentPart = new MimeBodyPart();
-                    messageAttachmentPart.setDataHandler(
-                        new DataHandler(
-                            new ByteArrayDataSource(attachment.getInputStream(), attachment.getContentType())
-                        )
-                    );
-                    messageAttachmentPart.setFileName(attachment.getFileName());
-                    multipart.addBodyPart(messageAttachmentPart);
-                } catch (MessagingException | IOException e) {
-                    throwEmailSendingException(e, "Error adding attachments to MIME Message");
+        if (nonNull(attachments)) {
+            attachments.forEach(
+                attachment -> {
+                    try {
+                        MimeBodyPart messageAttachmentPart = new MimeBodyPart();
+                        messageAttachmentPart.setDataHandler(
+                            new DataHandler(
+                                new ByteArrayDataSource(attachment.getInputStream(), attachment.getContentType())
+                            )
+                        );
+                        messageAttachmentPart.setFileName(attachment.getFileName());
+                        multipart.addBodyPart(messageAttachmentPart);
+                    } catch (MessagingException | IOException e) {
+                        throwEmailSendingException(e, "Error adding attachments to MIME Message");
+                    }
                 }
-            });
+            );
         }
     }
 
