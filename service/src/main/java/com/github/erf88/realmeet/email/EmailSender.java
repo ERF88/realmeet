@@ -1,8 +1,10 @@
 package com.github.erf88.realmeet.email;
 
 import com.github.erf88.realmeet.email.model.EmailInfo;
+import com.github.erf88.realmeet.exception.EmailSendingException;
 import com.github.erf88.realmeet.util.StringUtils;
 import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +32,30 @@ public class EmailSender {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMultipart multipart = new MimeMultipart();
 
-        mimeMessage.setFrom(emailInfo.getFrom());
-        mimeMessage.setSubject(emailInfo.getSubject());
-        mimeMessage.addRecipients(Message.RecipientType.TO, join(emailInfo.getTo()));
+        addBasicDetails(emailInfo, mimeMessage);
+    }
 
-        if(nonNull(emailInfo.getCc())){
-            mimeMessage.addRecipients(Message.RecipientType.CC, join(emailInfo.getCc()));
-        }
+    private void addBasicDetails(EmailInfo emailInfo, MimeMessage mimeMessage) {
+        try {
+            mimeMessage.setFrom(emailInfo.getFrom());
+            mimeMessage.setSubject(emailInfo.getSubject());
+            mimeMessage.addRecipients(Message.RecipientType.TO, join(emailInfo.getTo()));
 
-        if(nonNull(emailInfo.getBcc())){
-            mimeMessage.addRecipients(Message.RecipientType.BCC, join(emailInfo.getBcc()));
+            if(nonNull(emailInfo.getCc())){
+                mimeMessage.addRecipients(Message.RecipientType.CC, join(emailInfo.getCc()));
+            }
+
+            if(nonNull(emailInfo.getBcc())){
+                mimeMessage.addRecipients(Message.RecipientType.BCC, join(emailInfo.getBcc()));
+            }
+        } catch (MessagingException e) {
+            throwEmailSendingException(e, "Error adding data to MIME Message");
         }
+    }
+
+    private void throwEmailSendingException(Exception exception, String errorMessage) {
+        String fullErrorMessage = String.format("%s: %s", exception.getMessage(), errorMessage);
+        log.error(fullErrorMessage);
+        throw new EmailSendingException(fullErrorMessage, exception);
     }
 }
