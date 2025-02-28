@@ -10,17 +10,16 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.util.ByteArrayDataSource;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
-import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.context.Context;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.context.Context;
 
 import static com.github.erf88.realmeet.util.StringUtils.join;
 import static java.util.Objects.nonNull;
@@ -33,6 +32,7 @@ public class EmailSender {
     private final JavaMailSender javaMailSender;
     private final ITemplateEngine templateEngine;
 
+    @Async
     public void send(EmailInfo emailInfo) {
         log.info("Sending e-mail with subject '{}' to '{}'", emailInfo.getSubject(), emailInfo.getTo());
 
@@ -42,6 +42,9 @@ public class EmailSender {
         addBasicDetails(emailInfo, mimeMessage);
         addHtmlBody(emailInfo.getTemplate(), emailInfo.getTemplateData(), multipart);
         addAttachments(emailInfo.getAttachments(), multipart);
+        setContent(mimeMessage, multipart);
+
+        javaMailSender.send(mimeMessage);
     }
 
     private void addBasicDetails(EmailInfo emailInfo, MimeMessage mimeMessage) {
@@ -94,6 +97,14 @@ public class EmailSender {
                     throwEmailSendingException(e, "Error adding attachments to MIME Message");
                 }
             });
+        }
+    }
+
+    private void setContent(MimeMessage mimeMessage, MimeMultipart multipart) {
+        try {
+            mimeMessage.setContent(multipart);
+        } catch (MessagingException e) {
+            throwEmailSendingException(e, "Error setting content to MIME Message");
         }
     }
 
